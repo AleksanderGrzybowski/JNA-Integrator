@@ -26,7 +26,7 @@ public class Integrator {
 			System.out.println(System.getProperty("java.library.path"));
 			System.out.println(System.getProperty("user.dir"));
 			System.out.println("CURRENT: " + getCurrentDir());
-			System.setProperty("jna.library.path", getCurrentDir() + ":/home/kelog/Kodzenie/JNA-Test/native");
+			System.setProperty("jna.library.path", getCurrentDir() + ":/home/kelog/Kodzenie/JNA-Integrator/native");
 //				System.setProperty("jna.library.path", System.getProperty("user.dir"));
 
 //				System.load("/home/kelog/Kodzenie/JNA-Test/native/libnative.so");
