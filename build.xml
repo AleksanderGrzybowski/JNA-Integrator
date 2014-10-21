@@ -1,0 +1,67 @@
+<project name="JNA-Test-Ant" default="dist">
+
+
+    <path id="master-classpath">
+        <fileset dir="lib">
+            <include name="*.jar"/>
+        </fileset>
+
+        <pathelement location="build/"/>
+    </path>
+
+
+    <target name="clean">
+        <delete dir="build"/>
+        <delete dir="prod"/>
+        <exec executable="make" dir="native">
+            <arg line="all"/>
+        </exec>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="build/"/>
+        <javac destdir="build/" includeantruntime="false">
+            <src path="src"/>
+            <classpath refid="master-classpath"/>
+        </javac>
+        <exec executable="make" dir="native">
+            <arg line="all"/>
+        </exec>
+    </target>
+
+    <target name="dist" depends="clean,compile,junit">
+        <jar destfile="prod/prod.jar" basedir="build" excludes="**/*Test.class">
+            <manifest>
+                <attribute name="Main-Class" value="MyForm"/>
+                <attribute name="Class-Path"
+                           value="exp4j.jar jna.jar jna-plat.jar"/>
+            </manifest>
+
+
+        </jar>
+        <copy todir="prod">
+            <fileset dir="lib" includes="*.jar"/>
+            <fileset dir="native" includes="*.so"/>
+        </copy>
+
+    </target>
+
+
+    <target name="run" depends="compile">
+        <java jar="prod/prod.jar" classpathref="master-classpath" fork="true"/>
+    </target>
+
+    <target name="junit" depends="compile">
+        <junit printsummary="yes" showoutput="yes" fork="true">
+            <classpath refid="master-classpath"/>
+            <formatter type="brief" usefile="false"/>
+
+            <batchtest>
+                <fileset dir="src">
+                    <include name="**/*Test*"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+</project>
