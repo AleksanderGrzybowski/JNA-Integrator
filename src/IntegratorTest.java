@@ -1,6 +1,6 @@
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class IntegratorTest {
 
@@ -8,38 +8,29 @@ public class IntegratorTest {
 
 	@Test
 	public void test_C() throws Exception {
-		double exp;
-		double act;
-		Integrator library = new Integrator();
+		TestAdapter testAdapter;
 
-		exp = 0;
-		act = library.integrateC(0, Math.PI * 2, 1000, "sin(x)");
-		assertEquals(exp, act, 0.01);
 
-		exp = 20;
-		act = library.integrateC(-10, 10, 1000, "1");
-		assertEquals(exp, act, 0.01);
-
-		exp = 0.5;
-		act = library.integrateC(0, 1, 1000, "x");
-		assertEquals(exp, act, 0.01);
+		testAdapter = new TestAdapter(new Integrator(), TestAdapter.AlgorithmType.C);
+		doAllTests(testAdapter);
+		testAdapter = new TestAdapter(new Integrator(), TestAdapter.AlgorithmType.ASM);
+		doAllTests(testAdapter);
 	}
-	@Test
-	public void test_ASM() throws Exception {
+
+
+	private void doAllTests(TestAdapter testAdapter) throws Exception {
 		double exp;
 		double act;
-		Integrator library = new Integrator();
-
 		exp = 0;
-		act = library.integrateASM(0, Math.PI * 2, 1000, "sin(x)");
+		act = testAdapter.integrate(0, Math.PI * 2, 1000, "sin(x)");
 		assertEquals(exp, act, 0.01);
 
 		exp = 20;
-		act = library.integrateASM(-10, 10, 1000, "1");
+		act = testAdapter.integrate(-10, 10, 1000, "1");
 		assertEquals(exp, act, 0.01);
 
 		exp = 0.5;
-		act = library.integrateASM(0, 1, 1000, "x");
+		act = testAdapter.integrate(0, 1, 1000, "x");
 		assertEquals(exp, act, 0.01);
 	}
 
