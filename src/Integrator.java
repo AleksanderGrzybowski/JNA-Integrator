@@ -23,28 +23,30 @@ public class Integrator {
 	private IntInterface library;
 
 	public Integrator() throws PlatformLibraryNotFoundException {
-		System.out.println("Integrator() id=" + System.identityHashCode(this) + " start, info:");
-		System.out.println("java.library.path -> " + System.getProperty("java.library.path"));
-		System.out.println("user.dir -> " + System.getProperty("user.dir"));
-		System.out.println("getCurrentDir() -> " + getCurrentDir());
-		System.out.println("Setting home/kelog library path, remove in release");
+		System.out.println("****** Integrator() id=" + System.identityHashCode(this) + " start, info:  ******");
+		System.out.println(" * java.library.path -> " + System.getProperty("java.library.path"));
+		System.out.println(" * user.dir -> " + System.getProperty("user.dir"));
+		System.out.println(" * getCurrentDir() -> " + getCurrentDir());
+		System.out.println(" * Setting home/kelog library path, remove in release");
 		System.setProperty("jna.library.path", getCurrentDir() + ":/home/kelog/Kodzenie/JNA-Integrator/native");
 
-		System.out.println("Trying to load platform dependent library");
+		System.out.println(" * Trying to load platform dependent library");
 		try {
 			library = (IntInterface) Native.loadLibrary("native", IntInterface.class);
 		} catch (LinkageError e) {
-			System.out.println("LinkageError, translate+propagate");
+			System.out.println(" * LinkageError, translate+propagate");
 			throw new PlatformLibraryNotFoundException();
 		}
 
-		System.out.println("Platform library loaded, testing...");
+		System.out.println(" * Platform library loaded, testing...");
 		if (library.testASMLibrary() == 1337) // magic number
-			System.out.println("Test passed");
+			System.out.println(" * Test passed");
 		else {
-			System.out.println("Test FAILED!");
+			System.out.println(" * Test FAILED!");
 			throw new RuntimeException("Test FAILED!");
 		}
+
+		System.out.println("****** Finished loading ******");
 
 	}
 
@@ -98,14 +100,5 @@ public class Integrator {
 	public double integrateASM(double left, double right, int numberOfPoints, String functionString) throws
 			IntegrationNumericError, InvalidInputFunctionError {
 		return integrate(left, right, numberOfPoints, functionString, false);
-	}
-
-
-	static public void main(String argv[]) throws Exception {
-//		Expression e = new ExpressionBuilder("x^2").variable("x").build();
-//		System.out.println(e.setVariable("x", 4.1).evaluate());
-//		System.out.println(e.setVariable("x", 5).evaluate());
-
-
 	}
 }
