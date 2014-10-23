@@ -4,12 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 public class IntegratorTest {
 
-	// FIX THAT! TODO
-
 	@Test
 	public void test_C() throws Exception {
 		TestAdapter testAdapter;
-
 
 		testAdapter = new TestAdapter(new Integrator(), TestAdapter.AlgorithmType.C);
 		doAllTests(testAdapter);
@@ -19,26 +16,70 @@ public class IntegratorTest {
 
 
 	private void doAllTests(TestAdapter testAdapter) throws Exception {
-		double exp;
-		double act;
-		exp = 0;
-		act = testAdapter.integrate(0, Math.PI * 2, 1000, "sin(x)");
-		assertEquals(exp, act, 0.01);
+		double expected, actual;
+		double left, right;
+		String function;
+		final int POINTS = 1000;
 
-		exp = 20;
-		act = testAdapter.integrate(-10, 10, 1000, "1");
-		assertEquals(exp, act, 0.01);
+		/*
+		function = "";
+		left = ;
+		right = ;
+		expected = ;
+		actual = testAdapter.integrate(left, right, POINTS, function);
+		assertEquals(expected, actual, 0.01);
+		*/
 
-		exp = 0.5;
-		act = testAdapter.integrate(0, 1, 1000, "x");
-		assertEquals(exp, act, 0.01);
+
+		function = "sin(x)";
+		left = 0;
+		right = Math.PI * 2;
+		expected = 0;
+		actual = testAdapter.integrate(left, right, POINTS, function);
+		assertEquals(expected, actual, 0.01);
+
+		function = "1";
+		left = -10;
+		right = 10;
+		expected = 20;
+		actual = testAdapter.integrate(left, right, POINTS, function);
+		assertEquals(expected, actual, 0.01);
+
+
+		function = "x";
+		left = 0;
+		right = 1;
+		expected = 0.5;
+		actual = testAdapter.integrate(left, right, POINTS, function);
+		assertEquals(expected, actual, 0.01);
+
+		function = "x^2 + 1";
+		left = 0;
+		right = 2;
+		expected = 14.0/3.0;
+		actual = testAdapter.integrate(left, right, POINTS, function);
+		assertEquals(expected, actual, 0.01);
+
+		function = "2^x";
+		left = 2;
+		right = 4;
+		expected = 17.3123;
+		actual = testAdapter.integrate(left, right, POINTS, function);
+		assertEquals(expected, actual, 0.01);
+
+		function = "x^2 + x^(-2)";
+		left = 1;
+		right = 2;
+		expected = 17.0/6.0;
+		actual = testAdapter.integrate(left, right, POINTS, function);
+		assertEquals(expected, actual, 0.01);
+
+
+
 	}
 
-	/**
-	 * Created by kelog on 23.10.14.
-	 */
 	public static class TestAdapter {
-		public enum AlgorithmType {C, ASM};
+		public enum AlgorithmType {C, ASM}
 
 		private Integrator integrator;
 		private AlgorithmType algorithmType;
