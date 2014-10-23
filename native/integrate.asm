@@ -17,6 +17,8 @@ dwa: dq 2.0
 
 integrateASM:
 
+    ;finit
+
     push eax
     push ecx
     push esi
@@ -38,7 +40,7 @@ integrateASM:
 	shl ecx, 3 ; bo double
 	add esi, ecx
 	shr ecx, 3
-	fld qword [esi+12]
+	fld qword [esi] ; było +12
 	fadd
 
 
