@@ -24,6 +24,7 @@ public class IntegratorTest {
 		act = library.integrateC(0, 1, 1000, "x");
 		assertEquals(exp, act, 0.01);
 	}
+	@Test
 	public void test_ASM() throws Exception {
 		double exp;
 		double act;
