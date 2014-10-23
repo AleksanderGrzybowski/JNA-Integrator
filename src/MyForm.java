@@ -10,6 +10,11 @@ public class MyForm extends JFrame {
 
 	private JLabel resultLabel;
 	private JButton calculateButton;
+
+	private JRadioButton useCradioButton;
+	private JRadioButton useASMradioButton;
+	private ButtonGroup useGroup;
+
 	private JPanel rootPanel;
 
 	private Integrator integrator;
@@ -47,7 +52,14 @@ public class MyForm extends JFrame {
 				}
 
 				try {
-					double result = integrator.integrateC(left, right, 1000, func);
+					double result;
+					if (useCradioButton.isSelected()) {
+						result = integrator.integrateC(left, right, 1000, func);
+						System.out.println("Using C, result = " + result);
+					} else {
+						result = integrator.integrateASM(left, right, 1000, func);
+						System.out.println("Using ASM, result = " + result);
+					}
 					resultLabel.setText("" + result);
 				} catch (InvalidInputFunctionError ee) {
 					resultLabel.setText("błąd w funkcji");
@@ -65,8 +77,6 @@ public class MyForm extends JFrame {
 		rootPanel = new JPanel();
 		rootPanel.setLayout(new GridBagLayout());
 		setContentPane(rootPanel);
-
-
 
 
 		// pion, poziom <=> x, y
@@ -139,6 +149,24 @@ public class MyForm extends JFrame {
 		resultLabel.setText("czekam");
 		rootPanel.add(resultLabel, gbc);
 
+
+		useASMradioButton = new JRadioButton("asm");
+		gbc.gridx = 0;
+		gbc.gridy = 4;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		rootPanel.add(useASMradioButton, gbc);
+
+		useCradioButton = new JRadioButton("C");
+		gbc.gridx = 1;
+		gbc.gridy = 4;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		rootPanel.add(useCradioButton, gbc);
+
+		useGroup = new ButtonGroup();
+		useGroup.add(useCradioButton);
+		useGroup.add(useASMradioButton);
 
 
 		///
