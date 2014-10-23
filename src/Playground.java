@@ -1,6 +1,3 @@
-import net.objecthunter.exp4j.Expression;
-import net.objecthunter.exp4j.ExpressionBuilder;
-
 public class Playground {
 	public static void main(String[] args) throws Exception {
 //		String functionString = "asin(x)";
@@ -11,6 +8,9 @@ public class Playground {
 
 //		double result = Integrator.integrate(-10, 10, 1000, "2/x");
 //		System.out.printf("%.3f", result);
+
+		int i = new Integrator().return1337();
+		System.out.println("Jest" + i);
 
 
 	}

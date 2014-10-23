@@ -15,6 +15,7 @@ public class Integrator {
 	private interface IntInterface extends Library {
 		public double integrateC(double a, double b, int n, Pointer values);
 		public double integrateASM(double a, double b, int n, Pointer values);
+		public int return1337();
 	}
 
 	private static IntInterface library = null;
@@ -105,6 +106,11 @@ public class Integrator {
 			throw new IntegrationNumericError();
 		}
 		return library.integrateASM(left, right, numberOfPoints, memory);
+	}
+
+	public int return1337() {
+		return library.return1337();
+
 	}
 
 	static public void main(String argv[]) throws Exception {

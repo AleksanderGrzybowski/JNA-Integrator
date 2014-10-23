@@ -1,5 +1,7 @@
 all:
-	gcc -shared -o libnative.so *.c
+	nasm -f elf integrate.asm -o integrate.o
+	gcc -shared -o libnative.so *.c integrate.o
+
 
 clean:
 	rm *.so

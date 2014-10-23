@@ -14,7 +14,7 @@
         <delete dir="build"/>
         <delete dir="prod"/>
         <exec executable="make" dir="native">
-            <arg line="all"/>
+            <arg line="clean"/>
         </exec>
     </target>
 
