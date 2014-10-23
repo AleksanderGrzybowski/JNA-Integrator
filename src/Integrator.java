@@ -23,9 +23,7 @@ public class Integrator {
 	private IntInterface library;
 
 	public Integrator() throws PlatformLibraryNotFoundException {
-
-
-		System.out.println("Integrator() " + System.identityHashCode(this) + " start, info:");
+		System.out.println("Integrator() id=" + System.identityHashCode(this) + " start, info:");
 		System.out.println("java.library.path -> " + System.getProperty("java.library.path"));
 		System.out.println("user.dir -> " + System.getProperty("user.dir"));
 		System.out.println("getCurrentDir() -> " + getCurrentDir());
@@ -35,16 +33,17 @@ public class Integrator {
 		System.out.println("Trying to load platform dependent library");
 		try {
 			library = (IntInterface) Native.loadLibrary("native", IntInterface.class);
-
 		} catch (LinkageError e) {
 			System.out.println("LinkageError, translate+propagate");
 			throw new PlatformLibraryNotFoundException();
 		}
+
 		System.out.println("Platform library loaded, testing...");
 		if (library.testASMLibrary() == 1337) // magic number
 			System.out.println("Test passed");
 		else {
 			System.out.println("Test FAILED!");
+			throw new RuntimeException("Test FAILED!");
 		}
 
 	}
@@ -66,8 +65,8 @@ public class Integrator {
 			IntegrationNumericError, InvalidInputFunctionError {
 		double width = ((double) right - (double) left) / ((double) numberOfPoints);
 
-		int doubleSize = Native.getNativeSize(Double.class);
-		Pointer memory = new Memory((numberOfPoints + 1) * doubleSize);
+		int sizeofDouble = Native.getNativeSize(Double.class);
+		Pointer memory = new Memory((numberOfPoints + 1) * sizeofDouble);
 
 		Expression e;
 		try {
@@ -81,7 +80,7 @@ public class Integrator {
 				double y = e.setVariable("x", left + width * i).evaluate();
 				if (y == Double.NaN || y == Double.NEGATIVE_INFINITY || y == Double.POSITIVE_INFINITY)
 					throw new IntegrationNumericError();
-				memory.setDouble(i * doubleSize, y);
+				memory.setDouble(i * sizeofDouble, y);
 			}
 		} catch (ArithmeticException ee) { // div by 0??
 			throw new IntegrationNumericError();
@@ -93,13 +92,11 @@ public class Integrator {
 
 	public double integrateC(double left, double right, int numberOfPoints, String functionString) throws
 			IntegrationNumericError, InvalidInputFunctionError {
-
 		return integrate(left, right, numberOfPoints, functionString, true);
 	}
 
 	public double integrateASM(double left, double right, int numberOfPoints, String functionString) throws
 			IntegrationNumericError, InvalidInputFunctionError {
-
 		return integrate(left, right, numberOfPoints, functionString, false);
 	}
 

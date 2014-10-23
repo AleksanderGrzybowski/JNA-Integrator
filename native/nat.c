@@ -40,8 +40,3 @@ double integrate_debug(double left, double right, int points, double* wartosci) 
 	printf("%f\n", wynik);
 	return wynik;
 }
-
-double test(double* arr) {
-	printf("Pierwszy element: %f\n", arr[0]);
-	return arr[0];
-}
