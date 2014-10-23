@@ -14,31 +14,39 @@ public class Integrator {
 
 	private interface IntInterface extends Library {
 		public double integrateC(double a, double b, int n, Pointer values);
+
 		public double integrateASM(double a, double b, int n, Pointer values);
-		public int return1337();
+
+		public int testASMLibrary();
 	}
 
-	private static IntInterface library = null;
+	private IntInterface library;
 
 	public Integrator() throws PlatformLibraryNotFoundException {
-		if (library == null) {
-//			try {
-			System.out.println("Hello");
-
-			System.out.println(System.getProperty("java.library.path"));
-			System.out.println(System.getProperty("user.dir"));
-			System.out.println("CURRENT: " + getCurrentDir());
-			System.setProperty("jna.library.path", getCurrentDir() + ":/home/kelog/Kodzenie/JNA-Integrator/native");
-//				System.setProperty("jna.library.path", System.getProperty("user.dir"));
-
-//				System.load("/home/kelog/Kodzenie/JNA-Test/native/libnative.so");
 
 
+		System.out.println("Integrator() " + System.identityHashCode(this) + " start, info:");
+		System.out.println("java.library.path -> " + System.getProperty("java.library.path"));
+		System.out.println("user.dir -> " + System.getProperty("user.dir"));
+		System.out.println("getCurrentDir() -> " + getCurrentDir());
+		System.out.println("Setting home/kelog library path, remove in release");
+		System.setProperty("jna.library.path", getCurrentDir() + ":/home/kelog/Kodzenie/JNA-Integrator/native");
+
+		System.out.println("Trying to load platform dependent library");
+		try {
 			library = (IntInterface) Native.loadLibrary("native", IntInterface.class);
-//			} catch (LinkageError err) {
-//				throw new PlatformLibraryNotFoundException();
-//			}
+
+		} catch (LinkageError e) {
+			System.out.println("LinkageError, translate+propagate");
+			throw new PlatformLibraryNotFoundException();
 		}
+		System.out.println("Platform library loaded, testing...");
+		if (library.testASMLibrary() == 1337) // magic number
+			System.out.println("Test passed");
+		else {
+			System.out.println("Test FAILED!");
+		}
+
 	}
 
 	// TODO does it work???
@@ -54,7 +62,7 @@ public class Integrator {
 
 	// numberOfPoints to liczba punktów, przypisanych do x0, x1, ..., xn - razem (n+1) wartości
 
-	public double integrateC(double left, double right, int numberOfPoints, String functionString) throws
+	private double integrate(double left, double right, int numberOfPoints, String functionString, boolean changeItLaterMarker) throws
 			IntegrationNumericError, InvalidInputFunctionError {
 		double width = ((double) right - (double) left) / ((double) numberOfPoints);
 
@@ -78,40 +86,23 @@ public class Integrator {
 		} catch (ArithmeticException ee) { // div by 0??
 			throw new IntegrationNumericError();
 		}
-		return library.integrateC(left, right, numberOfPoints, memory);
+
+		if (changeItLaterMarker) return library.integrateC(left, right, numberOfPoints, memory);
+		else return library.integrateASM(left, right, numberOfPoints, memory);
+	}
+
+	public double integrateC(double left, double right, int numberOfPoints, String functionString) throws
+			IntegrationNumericError, InvalidInputFunctionError {
+
+		return integrate(left, right, numberOfPoints, functionString, true);
 	}
 
 	public double integrateASM(double left, double right, int numberOfPoints, String functionString) throws
 			IntegrationNumericError, InvalidInputFunctionError {
-		double width = ((double) right - (double) left) / ((double) numberOfPoints);
 
-		int doubleSize = Native.getNativeSize(Double.class);
-		Pointer memory = new Memory((numberOfPoints + 1) * doubleSize);
-
-		Expression e;
-		try {
-			e = new ExpressionBuilder(functionString).variable("x").build();
-		} catch (IllegalArgumentException eaea) {
-			throw new InvalidInputFunctionError();
-		}
-
-		try {
-			for (int i = 0; i <= numberOfPoints; ++i) {
-				double y = e.setVariable("x", left + width * i).evaluate();
-				if (y == Double.NaN || y == Double.NEGATIVE_INFINITY || y == Double.POSITIVE_INFINITY)
-					throw new IntegrationNumericError();
-				memory.setDouble(i * doubleSize, y);
-			}
-		} catch (ArithmeticException ee) { // div by 0??
-			throw new IntegrationNumericError();
-		}
-		return library.integrateASM(left, right, numberOfPoints, memory);
+		return integrate(left, right, numberOfPoints, functionString, false);
 	}
 
-	public int return1337() {
-		return library.return1337();
-
-	}
 
 	static public void main(String argv[]) throws Exception {
 //		Expression e = new ExpressionBuilder("x^2").variable("x").build();

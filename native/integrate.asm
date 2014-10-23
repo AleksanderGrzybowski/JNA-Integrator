@@ -1,5 +1,5 @@
 global  _integrate
-global return1337:function
+global testASMLibrary:function
 
 
 _integrate:
@@ -15,6 +15,6 @@ _integrate:
 
 
 
-return1337:
+testASMLibrary:
     mov eax, 1337
     ret
