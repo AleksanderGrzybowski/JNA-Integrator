@@ -11,15 +11,15 @@ public class IntegratorTest {
 		Integrator library = new Integrator();
 
 		exp = 0;
-		act = library.integrate(0, Math.PI * 2, 1000, "sin(x)");
+		act = library.integrateC(0, Math.PI * 2, 1000, "sin(x)");
 		assertEquals(exp, act, 0.01);
 
 		exp = 20;
-		act = library.integrate(-10, 10, 1000, "1");
+		act = library.integrateC(-10, 10, 1000, "1");
 		assertEquals(exp, act, 0.01);
 
 		exp = 0.5;
-		act = library.integrate(0, 1, 1000, "x");
+		act = library.integrateC(0, 1, 1000, "x");
 		assertEquals(exp, act, 0.01);
 	}
 

@@ -46,7 +46,7 @@ public class MyForm extends JFrame {
 				}
 
 				try {
-					double result = integrator.integrate(left, right, 1000, func);
+					double result = integrator.integrateC(left, right, 1000, func);
 					resultLabel.setText("" + result);
 				} catch (InvalidInputFunctionError ee) {
 					resultLabel.setText("błąd w funkcji");

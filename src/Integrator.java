@@ -13,7 +13,8 @@ import java.net.URLDecoder;
 public class Integrator {
 
 	private interface IntInterface extends Library {
-		public double integrate(double a, double b, int n, Pointer values);
+		public double integrateC(double a, double b, int n, Pointer values);
+		public double integrateASM(double a, double b, int n, Pointer values);
 	}
 
 	private static IntInterface library = null;
@@ -39,7 +40,7 @@ public class Integrator {
 		}
 	}
 
-
+	// TODO does it work???
 	private String getCurrentDir() {
 		String path = Integrator.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 		try {
@@ -52,7 +53,7 @@ public class Integrator {
 
 	// numberOfPoints to liczba punktów, przypisanych do x0, x1, ..., xn - razem (n+1) wartości
 
-	public double integrate(double left, double right, int numberOfPoints, String functionString) throws
+	public double integrateC(double left, double right, int numberOfPoints, String functionString) throws
 			IntegrationNumericError, InvalidInputFunctionError {
 		double width = ((double) right - (double) left) / ((double) numberOfPoints);
 
@@ -76,7 +77,34 @@ public class Integrator {
 		} catch (ArithmeticException ee) { // div by 0??
 			throw new IntegrationNumericError();
 		}
-		return library.integrate(left, right, numberOfPoints, memory);
+		return library.integrateC(left, right, numberOfPoints, memory);
+	}
+
+	public double integrateASM(double left, double right, int numberOfPoints, String functionString) throws
+			IntegrationNumericError, InvalidInputFunctionError {
+		double width = ((double) right - (double) left) / ((double) numberOfPoints);
+
+		int doubleSize = Native.getNativeSize(Double.class);
+		Pointer memory = new Memory((numberOfPoints + 1) * doubleSize);
+
+		Expression e;
+		try {
+			e = new ExpressionBuilder(functionString).variable("x").build();
+		} catch (IllegalArgumentException eaea) {
+			throw new InvalidInputFunctionError();
+		}
+
+		try {
+			for (int i = 0; i <= numberOfPoints; ++i) {
+				double y = e.setVariable("x", left + width * i).evaluate();
+				if (y == Double.NaN || y == Double.NEGATIVE_INFINITY || y == Double.POSITIVE_INFINITY)
+					throw new IntegrationNumericError();
+				memory.setDouble(i * doubleSize, y);
+			}
+		} catch (ArithmeticException ee) { // div by 0??
+			throw new IntegrationNumericError();
+		}
+		return library.integrateASM(left, right, numberOfPoints, memory);
 	}
 
 	static public void main(String argv[]) throws Exception {

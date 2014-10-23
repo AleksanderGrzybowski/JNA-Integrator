@@ -2,7 +2,7 @@
 
 
 
-double integrate(double left, double right, int points, double* wartosci) {
+double integrateC(double left, double right, int points, double* wartosci) {
 	double wynik = wartosci[0] + wartosci[points];
 
 	int i;
