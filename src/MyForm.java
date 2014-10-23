@@ -31,7 +31,9 @@ public class MyForm extends JFrame {
 				double left, right;
 				String func;
 				try {
-					// TODO przecinek nie działa
+					leftField.setText(leftField.getText().replaceAll(",", ".")); // fix later TODO
+					rightField.setText(rightField.getText().replaceAll(",", "."));
+
 					left = Double.parseDouble(leftField.getText());
 					right = Double.parseDouble(rightField.getText());
 					if ((right < left)) {
