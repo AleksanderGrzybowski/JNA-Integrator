@@ -21,9 +21,8 @@ public class MyForm extends JFrame {
 		try {
 			integrator = new Integrator();
 		} catch (PlatformLibraryNotFoundException e) {
-			System.err.println("" + e);
-			// dialog usera
-
+			JOptionPane.showMessageDialog(rootPanel, "Could not find platform library!");
+			System.exit(1); // ??
 		}
 
 		ActionListener listener = new ActionListener() {
