@@ -11,6 +11,7 @@ double integrateC(double left, double right, int points, double* wartosci) {
 	
 
 	wynik *= ( ((double)(right-left))/(2.0*points));
+
 	return wynik;
 }
 

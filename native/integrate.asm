@@ -1,8 +1,8 @@
-global  _integrate
+global  integrateASM
 global testASMLibrary:function
 
 
-_integrate:
+integrateASM:
         push    ebp
         mov     ebp,esp
         sub     esp,0x40        ; 64 bytes of local stack space
