@@ -2,11 +2,13 @@ global integrateASM:function
 global testASMLibrary:function
 section .text
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 testASMLibrary:
     mov eax, 1337
     ret
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; [esp+4] = left
 ; [esp+12] = right
@@ -71,4 +73,6 @@ petla:
     pop eax
 
 	ret
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
