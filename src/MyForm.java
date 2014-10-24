@@ -117,6 +117,7 @@ public class MyForm extends JFrame {
 		// TEXT FIELDS
 		functionField = new JTextField();
 		functionField.setColumns(20);
+		functionField.setText("sin(x)");
 		gbc.gridx = 1;
 		gbc.gridy = 0;
 		gbc.gridwidth = 1;
@@ -125,6 +126,7 @@ public class MyForm extends JFrame {
 
 		leftField = new JTextField();
 		leftField.setColumns(20);
+		leftField.setText("0");
 		gbc.gridx = 1;
 		gbc.gridy = 1;
 		gbc.gridwidth = 1;
@@ -133,6 +135,7 @@ public class MyForm extends JFrame {
 
 		rightField = new JTextField();
 		rightField.setColumns(20);
+		rightField.setText("3.1415");
 		gbc.gridx = 1;
 		gbc.gridy = 2;
 		gbc.gridwidth = 1;
