@@ -155,19 +155,23 @@ public class MyForm extends JFrame {
 		gbc.gridy = 4;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
+		gbc.anchor = GridBagConstraints.WEST;
 		rootPanel.add(useASMradioButton, gbc);
 
 		useCradioButton = new JRadioButton("C");
-		gbc.gridx = 1;
-		gbc.gridy = 4;
+		gbc.gridx = 0;
+		gbc.gridy = 5;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
+		gbc.anchor = GridBagConstraints.WEST;
 		rootPanel.add(useCradioButton, gbc);
 
 		useGroup = new ButtonGroup();
 		useGroup.add(useCradioButton);
 		useGroup.add(useASMradioButton);
 
+
+		useCradioButton.setSelected(true);
 
 		///
 		setVisible(true);
