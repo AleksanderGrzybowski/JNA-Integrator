@@ -9,7 +9,9 @@ public class MyForm extends JFrame {
 	private JTextField rightField;
 
 	private JLabel resultLabel;
+	private JLabel timeLabel;
 	private JButton calculateButton;
+
 
 	private JRadioButton useCradioButton;
 	private JRadioButton useASMradioButton;
@@ -53,11 +55,18 @@ public class MyForm extends JFrame {
 
 				try {
 					double result;
+
 					if (useCradioButton.isSelected()) {
-						result = integrator.integrateC(left, right, 1000, func);
+						long time = System.nanoTime();
+						result = integrator.integrateC(left, right, 1000000, func);
+						time = System.nanoTime() - time;
+						timeLabel.setText("" + time/10000000.0 + " ms");
 						System.out.println("Using C, result = " + result);
 					} else {
-						result = integrator.integrateASM(left, right, 1000, func);
+						long time = System.nanoTime();
+						result = integrator.integrateASM(left, right, 1000000, func);
+						time = System.nanoTime() - time;
+						timeLabel.setText("" + time/10000000.0 + " ms");
 						System.out.println("Using ASM, result = " + result);
 					}
 					resultLabel.setText("" + result);
@@ -148,6 +157,14 @@ public class MyForm extends JFrame {
 		gbc.gridheight = 1;
 		resultLabel.setText("czekam");
 		rootPanel.add(resultLabel, gbc);
+
+		timeLabel = new JLabel();
+		gbc.gridx = 1;
+		gbc.gridy = 4;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		timeLabel.setText("czas = ?");
+		rootPanel.add(timeLabel, gbc);
 
 
 		useASMradioButton = new JRadioButton("asm");
