@@ -2,6 +2,9 @@ import com.sun.jna.Library;
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
+import exceptions.IntegrationNumericError;
+import exceptions.InvalidInputFunctionError;
+import exceptions.PlatformLibraryNotFoundException;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
@@ -10,9 +13,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 
-public class Integrator {
+public abstract class Integrator {
 
-	private interface IntInterface extends Library {
+	protected interface IntInterface extends Library {
 		public double integrateC(double a, double b, int n, Pointer values);
 
 		public double integrateASM_FPU(double a, double b, int n, Pointer values);
@@ -20,7 +23,7 @@ public class Integrator {
 		public int testASMLibrary();
 	}
 
-	private IntInterface library;
+	protected IntInterface library;
 
 	public Integrator() throws PlatformLibraryNotFoundException {
 		System.out.println("****** Integrator() id=" + System.identityHashCode(this) + " start, info:  ******");
@@ -50,6 +53,15 @@ public class Integrator {
 
 	}
 
+	public static boolean isPlatformLibraryPresent() {
+		try {
+			new AsmFPUIntegrator(); // any
+			return true;
+		} catch (PlatformLibraryNotFoundException e) {
+			return false;
+		}
+	}
+
 	// TODO does it work???
 	private String getCurrentDir() {
 		String path = Integrator.class.getProtectionDomain().getCodeSource().getLocation().getPath();
@@ -63,7 +75,7 @@ public class Integrator {
 
 	// numberOfPoints to liczba punktów, przypisanych do x0, x1, ..., xn - razem (n+1) wartości
 
-	private IntegrationResult integrate(double left, double right, int numberOfPoints, String functionString, boolean changeItLaterMarker) throws
+	public IntegrationResult integrate(double left, double right, int numberOfPoints, String functionString) throws
 			IntegrationNumericError, InvalidInputFunctionError {
 		double width = ((double) right - (double) left) / ((double) numberOfPoints);
 
@@ -90,23 +102,14 @@ public class Integrator {
 
 		long time = System.nanoTime();
 		double result;
-		if (changeItLaterMarker) {
-			result = library.integrateC(left, right, numberOfPoints, memory);
-		} else {
-			result = library.integrateASM_FPU(left, right, numberOfPoints, memory);
-		}
+		///////////////////////////
+		result = callNativeAlgorithm(left, right, numberOfPoints, memory);
+		///////////////////////////
 		time = System.nanoTime() - time;
 		return new IntegrationResult(result, time);
 	}
 
-	public IntegrationResult integrateC(double left, double right, int numberOfPoints, String functionString) throws
-			IntegrationNumericError, InvalidInputFunctionError {
 
-		return integrate(left, right, numberOfPoints, functionString, true);
-	}
-
-	public IntegrationResult integrateASM_FPU(double left, double right, int numberOfPoints, String functionString) throws
-			IntegrationNumericError, InvalidInputFunctionError {
-		return integrate(left, right, numberOfPoints, functionString, false);
-	}
+	abstract double callNativeAlgorithm(double left, double right, int numberOfPoints, Pointer values) throws
+			IntegrationNumericError, InvalidInputFunctionError;
 }

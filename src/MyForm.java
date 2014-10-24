@@ -1,3 +1,7 @@
+import exceptions.IntegrationNumericError;
+import exceptions.InvalidInputFunctionError;
+import exceptions.PlatformLibraryNotFoundException;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -26,9 +30,7 @@ public class MyForm extends JFrame {
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setTitle("JNA-Integrator");
 
-		try {
-			integrator = new Integrator();
-		} catch (PlatformLibraryNotFoundException e) {
+		if (!Integrator.isPlatformLibraryPresent()) {
 			JOptionPane.showMessageDialog(rootPanel, "Could not find platform library!");
 			System.exit(1); // ??
 		}
@@ -58,11 +60,11 @@ public class MyForm extends JFrame {
 					IntegrationResult result;
 
 					if (useCradioButton.isSelected()) {
-						result = integrator.integrateC(left, right, 1000000, func);
+						result = new CIntegrator().integrate(left, right, 1000000, func);
 						timeLabel.setText("" + result.timeNS/10000000.0 + " ms");
 						System.out.println("Using C, result = " + result.result);
 					} else {
-						result = integrator.integrateASM_FPU(left, right, 1000000, func);
+						result = new AsmFPUIntegrator().integrate(left, right, 1000000, func);
 						timeLabel.setText("" + result.timeNS/10000000.0 + " ms");
 						System.out.println("Using ASM, result = " + result.result);
 					}
@@ -71,7 +73,7 @@ public class MyForm extends JFrame {
 					resultLabel.setText("błąd w funkcji");
 				} catch (IntegrationNumericError ee) {
 					resultLabel.setText("błąd w liczeniu");
-				}
+				} catch (PlatformLibraryNotFoundException ee) {} // we check before!
 			}
 		};
 		calculateButton.addActionListener(listener);
