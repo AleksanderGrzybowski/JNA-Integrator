@@ -23,7 +23,7 @@ public class MyForm extends JFrame {
 
 	private JPanel rootPanel;
 
-	private Integrator integrator;
+
 
 	public MyForm() {
 		createUI();
@@ -58,17 +58,19 @@ public class MyForm extends JFrame {
 
 				try {
 					IntegrationResult result;
+					Integrator integrator;
 
 					if (useCradioButton.isSelected()) {
-						result = new CIntegrator().integrate(left, right, 1000000, func);
-						timeLabel.setText("" + result.timeNS/10000000.0 + " ms");
-						System.out.println("Using C, result = " + result.result);
+						integrator = new CIntegrator();
 					} else {
-						result = new AsmFPUIntegrator().integrate(left, right, 1000000, func);
-						timeLabel.setText("" + result.timeNS/10000000.0 + " ms");
-						System.out.println("Using ASM, result = " + result.result);
+						integrator = new AsmFPUIntegrator();
 					}
-					resultLabel.setText("" + result.result);
+
+					result = integrator.integrate(left, right, 1000000, func);
+					timeLabel.setText("" + result.timeNS/10000000.0 + " ms");
+					System.out.println("Using " + integrator.getClass() + ", result = " + result.result);
+					resultLabel.setText("S = " + result.result);
+
 				} catch (InvalidInputFunctionError ee) {
 					resultLabel.setText("błąd w funkcji");
 				} catch (IntegrationNumericError ee) {
