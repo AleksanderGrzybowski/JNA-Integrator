@@ -1,14 +1,11 @@
 <project name="JNA-Test-Ant" default="dist">
 
-
     <path id="master-classpath">
         <fileset dir="lib">
             <include name="*.jar"/>
         </fileset>
-
         <pathelement location="build/"/>
     </path>
-
 
     <target name="clean">
         <delete dir="build"/>
@@ -18,7 +15,7 @@
         </exec>
     </target>
 
-    <target name="compile">
+    <target name="compile" depends="clean">
         <mkdir dir="build/"/>
         <javac destdir="build/" includeantruntime="false">
             <src path="src"/>
@@ -33,26 +30,23 @@
         <jar destfile="prod/prod.jar" basedir="build" excludes="**/*Test.class">
             <manifest>
                 <attribute name="Main-Class" value="MyForm"/>
-                <attribute name="Class-Path"
-                           value="exp4j.jar jna.jar jna-plat.jar"/>
+                <attribute name="Class-Path" value="exp4j.jar jna.jar jna-plat.jar"/>
             </manifest>
-
-
         </jar>
+
         <copy todir="prod">
-            <fileset dir="lib" includes="*.jar"/>
+            <fileset dir="lib" includes="jna.jar jna-plat.jar exp4j.jar"/>
             <fileset dir="native" includes="*.so"/>
         </copy>
-
     </target>
 
 
-    <target name="run" depends="compile">
+    <target name="run" depends="compile,dist">
         <java jar="prod/prod.jar" classpathref="master-classpath" fork="true"/>
     </target>
 
     <target name="junit" depends="compile">
-        <junit printsummary="yes" showoutput="yes" fork="true">
+        <junit printsummary="yes" showoutput="yes" fork="true" haltonfailure="true">
             <classpath refid="master-classpath"/>
             <formatter type="brief" usefile="false"/>
 
@@ -61,6 +55,7 @@
                     <include name="**/*Test*"/>
                 </fileset>
             </batchtest>
+
         </junit>
     </target>
 
