@@ -24,6 +24,7 @@ public class MyForm extends JFrame {
 	public MyForm() {
 		createUI();
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		setTitle("JNA-Integrator");
 
 		try {
 			integrator = new Integrator();
