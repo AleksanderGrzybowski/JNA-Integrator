@@ -1,4 +1,4 @@
-global integrateASM:function
+global integrateASM_FPU:function
 global testASMLibrary:function
 section .text
 
@@ -17,7 +17,7 @@ testASMLibrary:
 
 dwa: dq 2.0
 
-integrateASM:
+integrateASM_FPU:
 
     ;finit
 

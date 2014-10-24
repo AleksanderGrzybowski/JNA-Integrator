@@ -15,7 +15,7 @@ public class Integrator {
 	private interface IntInterface extends Library {
 		public double integrateC(double a, double b, int n, Pointer values);
 
-		public double integrateASM(double a, double b, int n, Pointer values);
+		public double integrateASM_FPU(double a, double b, int n, Pointer values);
 
 		public int testASMLibrary();
 	}
@@ -93,7 +93,7 @@ public class Integrator {
 		if (changeItLaterMarker) {
 			result = library.integrateC(left, right, numberOfPoints, memory);
 		} else {
-			result = library.integrateASM(left, right, numberOfPoints, memory);
+			result = library.integrateASM_FPU(left, right, numberOfPoints, memory);
 		}
 		time = System.nanoTime() - time;
 		return new IntegrationResult(result, time);
@@ -105,7 +105,7 @@ public class Integrator {
 		return integrate(left, right, numberOfPoints, functionString, true);
 	}
 
-	public IntegrationResult integrateASM(double left, double right, int numberOfPoints, String functionString) throws
+	public IntegrationResult integrateASM_FPU(double left, double right, int numberOfPoints, String functionString) throws
 			IntegrationNumericError, InvalidInputFunctionError {
 		return integrate(left, right, numberOfPoints, functionString, false);
 	}

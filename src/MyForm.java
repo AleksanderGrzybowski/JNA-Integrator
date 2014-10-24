@@ -62,7 +62,7 @@ public class MyForm extends JFrame {
 						timeLabel.setText("" + result.timeNS/10000000.0 + " ms");
 						System.out.println("Using C, result = " + result.result);
 					} else {
-						result = integrator.integrateASM(left, right, 1000000, func);
+						result = integrator.integrateASM_FPU(left, right, 1000000, func);
 						timeLabel.setText("" + result.timeNS/10000000.0 + " ms");
 						System.out.println("Using ASM, result = " + result.result);
 					}

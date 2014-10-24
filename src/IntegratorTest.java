@@ -10,7 +10,7 @@ public class IntegratorTest {
 
 		testAdapter = new TestAdapter(new Integrator(), TestAdapter.AlgorithmType.C);
 		doAllTests(testAdapter);
-		testAdapter = new TestAdapter(new Integrator(), TestAdapter.AlgorithmType.ASM);
+		testAdapter = new TestAdapter(new Integrator(), TestAdapter.AlgorithmType.ASM_FPU);
 		doAllTests(testAdapter);
 	}
 
@@ -86,7 +86,7 @@ public class IntegratorTest {
 	}
 
 	public static class TestAdapter {
-		public enum AlgorithmType {C, ASM}
+		public enum AlgorithmType {C, ASM_FPU}
 
 		private Integrator integrator;
 		private AlgorithmType algorithmType;
@@ -98,8 +98,8 @@ public class IntegratorTest {
 		public double integrate(double left, double right, int numberOfPoints, String functionString) throws
 				IntegrationNumericError, InvalidInputFunctionError {
 
-			if (algorithmType == AlgorithmType.ASM) {
-				return integrator.integrateASM(left, right, numberOfPoints, functionString).result;
+			if (algorithmType == AlgorithmType.ASM_FPU) {
+				return integrator.integrateASM_FPU(left, right, numberOfPoints, functionString).result;
 			} else if (algorithmType == AlgorithmType.C) {
 				return integrator.integrateC(left, right, numberOfPoints, functionString).result;
 			}
