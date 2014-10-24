@@ -44,7 +44,7 @@ public class MyForm extends JFrame {
 
 					left = Double.parseDouble(leftField.getText());
 					right = Double.parseDouble(rightField.getText());
-					if ((right < left)) {
+					if (right < left) {
 						resultLabel.setText("przedział nierosnący");
 						return;
 					}
@@ -58,15 +58,11 @@ public class MyForm extends JFrame {
 					IntegrationResult result;
 
 					if (useCradioButton.isSelected()) {
-
 						result = integrator.integrateC(left, right, 1000000, func);
-
 						timeLabel.setText("" + result.timeNS/10000000.0 + " ms");
 						System.out.println("Using C, result = " + result.result);
 					} else {
-
 						result = integrator.integrateASM(left, right, 1000000, func);
-
 						timeLabel.setText("" + result.timeNS/10000000.0 + " ms");
 						System.out.println("Using ASM, result = " + result.result);
 					}

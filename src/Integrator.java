@@ -90,10 +90,11 @@ public class Integrator {
 
 		long time = System.nanoTime();
 		double result;
-		if (changeItLaterMarker)
+		if (changeItLaterMarker) {
 			result = library.integrateC(left, right, numberOfPoints, memory);
-
-		else result = library.integrateASM(left, right, numberOfPoints, memory);
+		} else {
+			result = library.integrateASM(left, right, numberOfPoints, memory);
+		}
 		time = System.nanoTime() - time;
 		return new IntegrationResult(result, time);
 	}
