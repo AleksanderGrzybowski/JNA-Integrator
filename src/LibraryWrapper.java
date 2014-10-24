@@ -37,7 +37,6 @@ public class LibraryWrapper {
 			}
 
 			System.out.println("****** Finished loading ******");
-
 			return library;
 		}
 	}

@@ -6,11 +6,7 @@ public class IntegratorTest {
 
 	@Test
 	public void test_C() throws Exception {
-//		TestAdapter testAdapter;
-
-//		testAdapter = new TestAdapter(new Integrator(), TestAdapter.AlgorithmType.C);
 		doAllTests(new CIntegrator());
-//		testAdapter = new TestAdapter(new Integrator(), TestAdapter.AlgorithmType.ASM_FPU);
 		doAllTests(new AsmFPUIntegrator());
 	}
 

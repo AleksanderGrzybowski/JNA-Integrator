@@ -1,6 +1,3 @@
-/**
- * Created by kelog on 24.10.14.
- */
 public class IntegrationResult {
 	public final double result;
 	public final long timeNS;

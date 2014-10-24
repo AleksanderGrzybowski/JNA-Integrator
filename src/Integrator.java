@@ -10,27 +10,21 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 
 public abstract class Integrator {
 
-
-
 	protected NativeInterface library;
-
 
 	public Integrator() throws PlatformLibraryNotFoundException {
 		library = LibraryWrapper.getLibrary();
-
 	}
 
 	public static boolean isPlatformLibraryPresent() {
+		// may change, however, if there fails it will fail everywhere else
 		try {
-			new AsmFPUIntegrator(); // any
+			new AsmFPUIntegrator();
 			return true;
 		} catch (PlatformLibraryNotFoundException e) {
 			return false;
 		}
 	}
-
-	// TODO does it work???
-
 
 	// numberOfPoints to liczba punktów, przypisanych do x0, x1, ..., xn - razem (n+1) wartości
 
@@ -67,7 +61,6 @@ public abstract class Integrator {
 		time = System.nanoTime() - time;
 		return new IntegrationResult(result, time);
 	}
-
 
 	abstract double callNativeAlgorithm(double left, double right, int numberOfPoints, Pointer values) throws
 			IntegrationNumericError, InvalidInputFunctionError;
