@@ -11,11 +11,12 @@ public class MyForm extends JFrame {
 	private JTextField functionField;
 	private JTextField leftField;
 	private JTextField rightField;
+	private JTextField pointsField;
 
 	private JLabel resultLabel;
 	private JLabel timeLabel;
-	private JButton calculateButton;
 
+	private JButton calculateButton;
 
 	private JRadioButton useCradioButton;
 	private JRadioButton useASMradioButton;
@@ -39,6 +40,7 @@ public class MyForm extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				double left, right;
+				int points;
 				String func;
 				try {
 					leftField.setText(leftField.getText().replaceAll(",", ".")); // fix later TODO
@@ -46,6 +48,7 @@ public class MyForm extends JFrame {
 
 					left = Double.parseDouble(leftField.getText());
 					right = Double.parseDouble(rightField.getText());
+					points = Integer.parseInt(pointsField.getText());
 					if (right < left) {
 						resultLabel.setText("przedział nierosnący");
 						return;
@@ -66,7 +69,7 @@ public class MyForm extends JFrame {
 						integrator = new AsmFPUIntegrator();
 					}
 
-					result = integrator.integrate(left, right, 1000000, func);
+					result = integrator.integrate(left, right, points, func);
 					timeLabel.setText("" + result.timeNS/10000000.0 + " ms");
 					System.out.println("Using " + integrator.getClass() + ", result = " + result.result);
 					resultLabel.setText("S = " + result.result);
@@ -116,6 +119,15 @@ public class MyForm extends JFrame {
 		label3.setText("Do");
 		rootPanel.add(label3, gbc);
 
+		JLabel label4 = new JLabel();
+		gbc.gridx = 0;
+		gbc.gridy = 3;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		label4.setText("Punkty");
+		rootPanel.add(label4, gbc);
+
+
 		// TEXT FIELDS
 		functionField = new JTextField();
 		functionField.setColumns(20);
@@ -144,10 +156,19 @@ public class MyForm extends JFrame {
 		gbc.gridheight = 1;
 		rootPanel.add(rightField, gbc);
 
+		pointsField = new JTextField();
+		pointsField.setColumns(20);
+		pointsField.setText("1000000");
+		gbc.gridx = 1;
+		gbc.gridy = 3;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		rootPanel.add(pointsField, gbc);
+
 
 		calculateButton = new JButton();
 		gbc.gridx = 0;
-		gbc.gridy = 3;
+		gbc.gridy = 4;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
 		calculateButton.setText("Licz!");
@@ -156,7 +177,7 @@ public class MyForm extends JFrame {
 
 		resultLabel = new JLabel();
 		gbc.gridx = 1;
-		gbc.gridy = 3;
+		gbc.gridy = 4;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
 		resultLabel.setText("czekam");
@@ -164,7 +185,7 @@ public class MyForm extends JFrame {
 
 		timeLabel = new JLabel();
 		gbc.gridx = 1;
-		gbc.gridy = 4;
+		gbc.gridy = 5;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
 		timeLabel.setText("czas = ?");
@@ -173,7 +194,7 @@ public class MyForm extends JFrame {
 
 		useASMradioButton = new JRadioButton("asm");
 		gbc.gridx = 0;
-		gbc.gridy = 4;
+		gbc.gridy = 5;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
 		gbc.anchor = GridBagConstraints.WEST;
@@ -181,7 +202,7 @@ public class MyForm extends JFrame {
 
 		useCradioButton = new JRadioButton("C");
 		gbc.gridx = 0;
-		gbc.gridy = 5;
+		gbc.gridy = 6;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
 		gbc.anchor = GridBagConstraints.WEST;
