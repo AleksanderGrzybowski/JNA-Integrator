@@ -55,22 +55,22 @@ public class MyForm extends JFrame {
 				}
 
 				try {
-					double result;
+					IntegrationResult result;
 
 					if (useCradioButton.isSelected()) {
-						long time = System.nanoTime();
+
 						result = integrator.integrateC(left, right, 1000000, func);
-						time = System.nanoTime() - time;
-						timeLabel.setText("" + time/10000000.0 + " ms");
-						System.out.println("Using C, result = " + result);
+
+						timeLabel.setText("" + result.timeNS/10000000.0 + " ms");
+						System.out.println("Using C, result = " + result.result);
 					} else {
-						long time = System.nanoTime();
+
 						result = integrator.integrateASM(left, right, 1000000, func);
-						time = System.nanoTime() - time;
-						timeLabel.setText("" + time/10000000.0 + " ms");
-						System.out.println("Using ASM, result = " + result);
+
+						timeLabel.setText("" + result.timeNS/10000000.0 + " ms");
+						System.out.println("Using ASM, result = " + result.result);
 					}
-					resultLabel.setText("" + result);
+					resultLabel.setText("" + result.result);
 				} catch (InvalidInputFunctionError ee) {
 					resultLabel.setText("błąd w funkcji");
 				} catch (IntegrationNumericError ee) {

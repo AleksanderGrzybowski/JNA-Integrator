@@ -99,9 +99,9 @@ public class IntegratorTest {
 				IntegrationNumericError, InvalidInputFunctionError {
 
 			if (algorithmType == AlgorithmType.ASM) {
-				return integrator.integrateASM(left, right, numberOfPoints, functionString);
+				return integrator.integrateASM(left, right, numberOfPoints, functionString).result;
 			} else if (algorithmType == AlgorithmType.C) {
-				return integrator.integrateC(left, right, numberOfPoints, functionString);
+				return integrator.integrateC(left, right, numberOfPoints, functionString).result;
 			}
 			throw new RuntimeException("Should never happen");
 		}
