@@ -5,11 +5,10 @@ import static org.junit.Assert.assertEquals;
 public class IntegratorTest {
 
 	@Test
-	public void test_C() throws Exception {
+	public void test_all() throws Exception {
 		doAllTests(new CIntegrator());
 		doAllTests(new AsmFPUIntegrator());
 	}
-
 
 	private void doAllTests(Integrator integrator) throws Exception {
 		double expected, actual;
@@ -48,7 +47,6 @@ public class IntegratorTest {
 		actual = integrator.integrate(left, right, POINTS, function).result;
 		assertEquals(expected, actual, 0.01);
 
-
 		function = "x";
 		left = 0;
 		right = 1;
@@ -76,32 +74,5 @@ public class IntegratorTest {
 		expected = 17.0/6.0;
 		actual = integrator.integrate(left, right, POINTS, function).result;
 		assertEquals(expected, actual, 0.01);
-
-
-
 	}
-
-//	public static class TestAdapter {
-//		public enum AlgorithmType {C, ASM_FPU}
-//
-//		private Integrator integrator;
-//		private AlgorithmType algorithmType;
-//		public TestAdapter(Integrator in, AlgorithmType al) {
-//			integrator = in;
-//			algorithmType = al;
-//		}
-//
-//		public double integrate(double left, double right, int numberOfPoints, String functionString) throws
-//				IntegrationNumericError, InvalidInputFunctionError {
-//
-//			if (algorithmType == AlgorithmType.ASM_FPU) {
-//				return integrator.integrateASM_FPU(left, right, numberOfPoints, functionString).result;
-//			} else if (algorithmType == AlgorithmType.C) {
-//				return integrator.integrateC(left, right, numberOfPoints, functionString).result;
-//			}
-//			throw new RuntimeException("Should never happen");
-//		}
-//
-//
-//	}
 }

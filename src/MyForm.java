@@ -24,8 +24,6 @@ public class MyForm extends JFrame {
 
 	private JPanel rootPanel;
 
-
-
 	public MyForm() {
 		createUI();
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -49,10 +47,12 @@ public class MyForm extends JFrame {
 					left = Double.parseDouble(leftField.getText());
 					right = Double.parseDouble(rightField.getText());
 					points = Integer.parseInt(pointsField.getText());
+
 					if (right < left) {
 						resultLabel.setText("przedział nierosnący");
 						return;
 					}
+
 					func = functionField.getText();
 				} catch (NumberFormatException ee) {
 					resultLabel.setText("błąd w wejściu");
@@ -91,10 +91,8 @@ public class MyForm extends JFrame {
 		rootPanel.setLayout(new GridBagLayout());
 		setContentPane(rootPanel);
 
+		// STATIC LABELS
 
-		// pion, poziom <=> x, y
-
-		// LABELS
 		JLabel label1 = new JLabel();
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -127,8 +125,8 @@ public class MyForm extends JFrame {
 		label4.setText("Punkty");
 		rootPanel.add(label4, gbc);
 
-
 		// TEXT FIELDS
+
 		functionField = new JTextField();
 		functionField.setColumns(20);
 		functionField.setText("sin(x)");
@@ -165,6 +163,7 @@ public class MyForm extends JFrame {
 		gbc.gridheight = 1;
 		rootPanel.add(pointsField, gbc);
 
+		// BUTTONS
 
 		calculateButton = new JButton();
 		gbc.gridx = 0;
@@ -174,6 +173,7 @@ public class MyForm extends JFrame {
 		calculateButton.setText("Licz!");
 		rootPanel.add(calculateButton, gbc);
 
+		// DYNAMIC LABELS
 
 		resultLabel = new JLabel();
 		gbc.gridx = 1;
@@ -191,6 +191,7 @@ public class MyForm extends JFrame {
 		timeLabel.setText("czas = ?");
 		rootPanel.add(timeLabel, gbc);
 
+		// RADIO's
 
 		useASMradioButton = new JRadioButton("asm");
 		gbc.gridx = 0;

@@ -35,16 +35,16 @@ public abstract class Integrator {
 		int sizeofDouble = Native.getNativeSize(Double.class);
 		Pointer memory = new Memory((numberOfPoints + 1) * sizeofDouble);
 
-		Expression e;
+		Expression expression;
 		try {
-			e = new ExpressionBuilder(functionString).variable("x").build();
+			expression = new ExpressionBuilder(functionString).variable("x").build();
 		} catch (IllegalArgumentException eaea) {
 			throw new InvalidInputFunctionError();
 		}
 
 		try {
 			for (int i = 0; i <= numberOfPoints; ++i) {
-				double y = e.setVariable("x", left + width * i).evaluate();
+				double y = expression.setVariable("x", left + width * i).evaluate();
 				if (y == Double.NaN || y == Double.NEGATIVE_INFINITY || y == Double.POSITIVE_INFINITY)
 					throw new IntegrationNumericError();
 				memory.setDouble(i * sizeofDouble, y);
