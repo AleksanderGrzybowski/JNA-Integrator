@@ -4,4 +4,4 @@ all:
 
 
 clean:
-	rm *.so
+	rm *.so *.o || true
