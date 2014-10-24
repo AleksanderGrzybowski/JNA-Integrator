@@ -38,6 +38,13 @@ public class IntegratorTest {
 		actual = testAdapter.integrate(left, right, POINTS, function);
 		assertEquals(expected, actual, 0.01);
 
+		function = "cos(x)";
+		left = 0;
+		right = Math.PI * 2 * 10;
+		expected = 0;
+		actual = testAdapter.integrate(left, right, POINTS, function);
+		assertEquals(expected, actual, 0.01);
+
 		function = "1";
 		left = -10;
 		right = 10;
