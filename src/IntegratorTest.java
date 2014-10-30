@@ -1,104 +1,57 @@
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
+
 
 public class IntegratorTest {
 
-	@Test
-	public void test_all() throws Exception {
-		doAllTests(new CIntegrator());
-		doAllTests(new AsmFPUIntegrator());
-		doAllTests(new AsmSSEIntegrator());
+	private enum TestCase {
+		T01("sin(x)", 0, Math.PI, 2, 1000),
+		T02("cos(x)", 0, 20 * Math.PI, 0, 1000),
+		T03("1", -10, 10, 20, 1000),
+		T04("x", 0, 1, 0.5, 1000),
+		T05("x^2 + 1", 0, 2, 14.0 / 3.0, 1000),
+		T06("2^x", 2, 4, 17.3123, 1000),
+		T07("x^2 + x^(-2)", 1, 2, 17.0 / 6.0, 1000);
+		//T01("", , , , 1000),
 
-//		System.out.println("START");
-//		double expected, actual;
-//		double left, right;
-//		String function;
-//		final int POINTS = 11;
-//		Integrator i = new AsmSSEIntegrator();
-//
-//		function = "1";
-//		left = -10;
-//		right = 10;
-//		expected = 20;
-//		actual = i.integrate(left, right, POINTS, function).result;
-//		assertEquals(expected, actual, 0.01);
-//		System.out.println("KONIEC");
+		TestCase(String function, double left, double right, double expected, int points) {
+			this.left = left;
+			this.right = right;
+			this.points = points;
+			this.function = function;
+			this.expected = expected;
+		}
+
+		public double left, right;
+		public int points;
+		public String function;
+		public double expected;
 	}
 
-	private void doAllTests(Integrator integrator) throws Exception {
-		double expected, actual;
-		double left, right;
-		String function;
-		final int POINTS = 1000;
+	@Test
+	public void test_all() throws Exception {
+		List<Class<? extends Integrator>> classes = new ArrayList<Class<? extends Integrator>>();
+		classes.addAll(Arrays.asList(CIntegrator.class, AsmFPUIntegrator.class, AsmSSEIntegrator.class));
 
-		/*
-		function = "";
-		left = ;
-		right = ;
-		expected = ;
-		actual = testAdapter.integrate(left, right, POINTS, function);
-		assertEquals(expected, actual, 0.01);
-		*/
+		for (Class<? extends Integrator> integ : classes) {
+			Integrator instance = integ.newInstance();
+			System.out.println("****** Starting test routine for " + instance.getClass() + " ******");
 
-		System.out.println("****** Starting test routine for " + integrator.getClass() + " ******");
+			for (TestCase c : TestCase.values()) {
+				double expected = c.expected;
+				double actual = instance.integrate(c.left, c.right, c.points, c.function).result;
+				System.out.println("Expected = " + expected + " actual = "  + actual);
+				assertEquals(expected, actual, 0.01);
+			}
 
-		function = "sin(x)";
-		left = 0;
-		right = Math.PI * 2;
-		expected = 0;
-		actual = integrator.integrate(left, right, POINTS, function).result;
-		System.out.println("Expected = " + expected + "  actual = " + actual);
-		assertEquals(expected, actual, 0.01);
+			System.out.println("****** Finished test routine for " + instance.getClass() + " ******");
+		}
 
-		function = "cos(x)";
-		left = 0;
-		right = Math.PI * 2 * 10;
-		expected = 0;
-		actual = integrator.integrate(left, right, POINTS, function).result;
-		System.out.println("Expected = " + expected + "  actual = " + actual);
-		assertEquals(expected, actual, 0.01);
 
-		function = "1";
-		left = -10;
-		right = 10;
-		expected = 20;
-		actual = integrator.integrate(left, right, POINTS, function).result;
-		System.out.println("Expected = " + expected + "  actual = " + actual);
-		assertEquals(expected, actual, 0.01);
-
-		function = "x";
-		left = 0;
-		right = 1;
-		expected = 0.5;
-		actual = integrator.integrate(left, right, POINTS, function).result;
-		System.out.println("Expected = " + expected + "  actual = " + actual);
-		assertEquals(expected, actual, 0.01);
-
-		function = "x^2 + 1";
-		left = 0;
-		right = 2;
-		expected = 14.0/3.0;
-		actual = integrator.integrate(left, right, POINTS, function).result;
-		System.out.println("Expected = " + expected + "  actual = " + actual);
-		assertEquals(expected, actual, 0.01);
-
-		function = "2^x";
-		left = 2;
-		right = 4;
-		expected = 17.3123;
-		actual = integrator.integrate(left, right, POINTS, function).result;
-		System.out.println("Expected = " + expected + "  actual = " + actual);
-		assertEquals(expected, actual, 0.01);
-
-		function = "x^2 + x^(-2)";
-		left = 1;
-		right = 2;
-		expected = 17.0/6.0;
-		actual = integrator.integrate(left, right, POINTS, function).result;
-		System.out.println("Expected = " + expected + "  actual = " + actual);
-		assertEquals(expected, actual, 0.01);
-
-		System.out.println("****** Finished ******");
 	}
 }
