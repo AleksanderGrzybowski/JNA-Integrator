@@ -41,12 +41,14 @@ public class IntegratorTest {
 		assertEquals(expected, actual, 0.01);
 		*/
 
+		System.out.println("****** Starting test routine for " + integrator.getClass() + " ******");
 
 		function = "sin(x)";
 		left = 0;
 		right = Math.PI * 2;
 		expected = 0;
 		actual = integrator.integrate(left, right, POINTS, function).result;
+		System.out.println("Expected = " + expected + "  actual = " + actual);
 		assertEquals(expected, actual, 0.01);
 
 		function = "cos(x)";
@@ -54,6 +56,7 @@ public class IntegratorTest {
 		right = Math.PI * 2 * 10;
 		expected = 0;
 		actual = integrator.integrate(left, right, POINTS, function).result;
+		System.out.println("Expected = " + expected + "  actual = " + actual);
 		assertEquals(expected, actual, 0.01);
 
 		function = "1";
@@ -61,6 +64,7 @@ public class IntegratorTest {
 		right = 10;
 		expected = 20;
 		actual = integrator.integrate(left, right, POINTS, function).result;
+		System.out.println("Expected = " + expected + "  actual = " + actual);
 		assertEquals(expected, actual, 0.01);
 
 		function = "x";
@@ -68,6 +72,7 @@ public class IntegratorTest {
 		right = 1;
 		expected = 0.5;
 		actual = integrator.integrate(left, right, POINTS, function).result;
+		System.out.println("Expected = " + expected + "  actual = " + actual);
 		assertEquals(expected, actual, 0.01);
 
 		function = "x^2 + 1";
@@ -75,6 +80,7 @@ public class IntegratorTest {
 		right = 2;
 		expected = 14.0/3.0;
 		actual = integrator.integrate(left, right, POINTS, function).result;
+		System.out.println("Expected = " + expected + "  actual = " + actual);
 		assertEquals(expected, actual, 0.01);
 
 		function = "2^x";
@@ -82,6 +88,7 @@ public class IntegratorTest {
 		right = 4;
 		expected = 17.3123;
 		actual = integrator.integrate(left, right, POINTS, function).result;
+		System.out.println("Expected = " + expected + "  actual = " + actual);
 		assertEquals(expected, actual, 0.01);
 
 		function = "x^2 + x^(-2)";
@@ -89,6 +96,9 @@ public class IntegratorTest {
 		right = 2;
 		expected = 17.0/6.0;
 		actual = integrator.integrate(left, right, POINTS, function).result;
+		System.out.println("Expected = " + expected + "  actual = " + actual);
 		assertEquals(expected, actual, 0.01);
+
+		System.out.println("****** Finished ******");
 	}
 }
