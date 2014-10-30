@@ -30,6 +30,11 @@ public abstract class Integrator {
 
 	public IntegrationResult integrate(double left, double right, int numberOfPoints, String functionString) throws
 			IntegrationNumericError, InvalidInputFunctionError {
+
+		// n musi być nieparzyste, żeby (n+1) punktów było parzyste - SSE
+		if (numberOfPoints % 2 == 0) numberOfPoints++;
+		// TODO jakoś ładniej?
+
 		double width = ((double) right - (double) left) / ((double) numberOfPoints);
 
 		int sizeofDouble = Native.getNativeSize(Double.class);
