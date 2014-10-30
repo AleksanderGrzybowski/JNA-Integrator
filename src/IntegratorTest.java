@@ -36,7 +36,7 @@ public class IntegratorTest {
 	@Test
 	public void test_all() throws Exception {
 		List<Class<? extends Integrator>> classes = new ArrayList<Class<? extends Integrator>>();
-		classes.addAll(Arrays.asList(CIntegrator.class, AsmFPUIntegrator.class, AsmSSEIntegrator.class));
+		classes.addAll(Arrays.asList(CIntegrator.class, AsmFPUIntegrator.class, AsmSSEIntegrator.class, JavaIntegrator.class));
 
 		for (Class<? extends Integrator> integ : classes) {
 			Integrator instance = integ.newInstance();
