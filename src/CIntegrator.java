@@ -9,7 +9,7 @@ public class CIntegrator extends Integrator {
 	}
 
 	@Override
-	double callNativeAlgorithm(double left, double right, int numberOfPoints, Pointer values) throws IntegrationNumericError, InvalidInputFunctionError {
+	double callAlgorithm(double left, double right, int numberOfPoints, Pointer values) throws IntegrationNumericError, InvalidInputFunctionError {
 		return library.integrateC(left, right, numberOfPoints, values);
 	}
 }

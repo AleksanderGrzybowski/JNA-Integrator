@@ -7,7 +7,7 @@ public class AsmFPUIntegrator extends Integrator {
 	}
 
 	@Override
-	double callNativeAlgorithm(double left, double right, int numberOfPoints, Pointer values) {
+	double callAlgorithm(double left, double right, int numberOfPoints, Pointer values) {
 		return library.integrateASM_FPU(left, right, numberOfPoints, values);
 	}
 }

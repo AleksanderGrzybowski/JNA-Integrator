@@ -7,7 +7,7 @@ public class AsmSSEIntegrator extends Integrator {
 	}
 
 	@Override
-	double callNativeAlgorithm(double left, double right, int numberOfPoints, Pointer values) {
+	double callAlgorithm(double left, double right, int numberOfPoints, Pointer values) {
 		return library.integrateASM_SSE(left, right, numberOfPoints, values);
 	}
 }

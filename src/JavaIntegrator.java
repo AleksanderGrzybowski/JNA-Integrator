@@ -7,7 +7,7 @@ public class JavaIntegrator extends Integrator {
 	}
 
 	@Override
-	double callNativeAlgorithm(double left, double right, int numberOfPoints, Pointer values) {
+	double callAlgorithm(double left, double right, int numberOfPoints, Pointer values) {
 		double[] array = values.getDoubleArray(0, numberOfPoints+1);
 
 		double result = array[0] + array[numberOfPoints];
