@@ -1,6 +1,4 @@
 import com.sun.jna.Pointer;
-import exceptions.IntegrationNumericError;
-import exceptions.InvalidInputFunctionError;
 import exceptions.PlatformLibraryNotFoundException;
 
 public class CIntegrator extends Integrator {
@@ -9,7 +7,7 @@ public class CIntegrator extends Integrator {
 	}
 
 	@Override
-	double callAlgorithm(double left, double right, int numberOfPoints, Pointer values) throws IntegrationNumericError, InvalidInputFunctionError {
+	double callAlgorithm(double left, double right, int numberOfPoints, Pointer values) {
 		return library.integrateC(left, right, numberOfPoints, values);
 	}
 }

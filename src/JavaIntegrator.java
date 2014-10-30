@@ -15,8 +15,7 @@ public class JavaIntegrator extends Integrator {
 		for (i = 1; i <= (numberOfPoints-1); ++i)
 			result += 2*array[i];
 
-		result *= ( ((double)(right-left))/(2.0*numberOfPoints));
-
+		result *= ( (right-left)/(2.0*numberOfPoints));
 		return result;
 	}
 }

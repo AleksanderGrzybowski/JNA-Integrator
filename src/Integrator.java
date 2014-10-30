@@ -115,7 +115,7 @@ class LibraryWrapper {
 		}
 	}
 
-	// from stack, don't really know if works
+	// from stack, I don't really know if it works, but doesn't break anything
 	private static String getCurrentDir() {
 		String path = Integrator.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 		try {

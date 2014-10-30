@@ -7,7 +7,67 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+
 public class MyForm extends JFrame {
+
+	class IntegrateButtonListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			double left, right;
+			int points;
+			String func;
+			try {
+				leftField.setText(leftField.getText().replaceAll(",", "."));
+				rightField.setText(rightField.getText().replaceAll(",", "."));
+
+				left = Double.parseDouble(leftField.getText());
+				right = Double.parseDouble(rightField.getText());
+				points = Integer.parseInt(pointsField.getText());
+
+				if (right < left) {
+					resultLabel.setText("range must be increasing");
+					return;
+				}
+
+				func = functionField.getText();
+			} catch (NumberFormatException ee) {
+				resultLabel.setText("input error");
+				return;
+			}
+
+			try {
+				IntegrationResult result;
+				Integrator integrator;
+
+				// may replace with sth more elegant, but not worth it
+				if (useCradioButton.isSelected()) {
+					integrator = new CIntegrator();
+				} else if (useASM_FPUradioButton.isSelected()) {
+					integrator = new AsmFPUIntegrator();
+				} else if (useASM_SSEradioButton.isSelected()) {
+					integrator = new AsmSSEIntegrator();
+				} else {
+					integrator = new JavaIntegrator();
+				}
+
+				result = integrator.integrate(left, right, points, func);
+				timeLabel.setText("" + result.timeNS / 10000000.0 + " ms");
+				System.out.println("Using " + integrator.getClass() + ", result = " + result.result);
+				resultLabel.setText("S = " + result.result);
+
+			} catch (InvalidInputFunctionError ee) {
+				resultLabel.setText("function input error");
+			} catch (IntegrationNumericError ee) {
+				resultLabel.setText("calculation error");
+			} catch (PlatformLibraryNotFoundException ee) {
+			} // we check before!
+		}
+	}
+
+	;
+
+	public static final String WINDOW_TITLE = "JNA-Integrator";
+
 	private JTextField functionField;
 	private JTextField leftField;
 	private JTextField rightField;
@@ -27,68 +87,18 @@ public class MyForm extends JFrame {
 
 	private JPanel rootPanel;
 
+
 	public MyForm() {
 		createUI();
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		setTitle("JNA-Integrator");
+		setTitle(WINDOW_TITLE);
 
 		if (!Integrator.isPlatformLibraryPresent()) {
 			JOptionPane.showMessageDialog(rootPanel, "Could not find platform library!");
 			System.exit(1); // ??
 		}
 
-		ActionListener listener = new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				double left, right;
-				int points;
-				String func;
-				try {
-					leftField.setText(leftField.getText().replaceAll(",", ".")); // fix later TODO
-					rightField.setText(rightField.getText().replaceAll(",", "."));
-
-					left = Double.parseDouble(leftField.getText());
-					right = Double.parseDouble(rightField.getText());
-					points = Integer.parseInt(pointsField.getText());
-
-					if (right < left) {
-						resultLabel.setText("przedział nierosnący");
-						return;
-					}
-
-					func = functionField.getText();
-				} catch (NumberFormatException ee) {
-					resultLabel.setText("błąd w wejściu");
-					return;
-				}
-
-				try {
-					IntegrationResult result;
-					Integrator integrator;
-
-					if (useCradioButton.isSelected()) {
-						integrator = new CIntegrator();
-					} else if (useASM_FPUradioButton.isSelected()) {
-						integrator = new AsmFPUIntegrator();
-					} else if (useASM_SSEradioButton.isSelected()) {
-						integrator = new AsmSSEIntegrator();
-					} else {
-						integrator = new JavaIntegrator();
-					}
-
-					result = integrator.integrate(left, right, points, func);
-					timeLabel.setText("" + result.timeNS/10000000.0 + " ms");
-					System.out.println("Using " + integrator.getClass() + ", result = " + result.result);
-					resultLabel.setText("S = " + result.result);
-
-				} catch (InvalidInputFunctionError ee) {
-					resultLabel.setText("błąd w funkcji");
-				} catch (IntegrationNumericError ee) {
-					resultLabel.setText("błąd w liczeniu");
-				} catch (PlatformLibraryNotFoundException ee) {} // we check before!
-			}
-		};
-		calculateButton.addActionListener(listener);
+		calculateButton.addActionListener(new IntegrateButtonListener());
 	}
 
 	private void createUI() {
@@ -105,7 +115,7 @@ public class MyForm extends JFrame {
 		gbc.gridy = 0;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
-		label1.setText("Funkcja");
+		label1.setText("Function");
 		rootPanel.add(label1, gbc);
 
 		JLabel label2 = new JLabel();
@@ -113,7 +123,7 @@ public class MyForm extends JFrame {
 		gbc.gridy = 1;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
-		label2.setText("Od");
+		label2.setText("From");
 		rootPanel.add(label2, gbc);
 
 		JLabel label3 = new JLabel();
@@ -121,7 +131,7 @@ public class MyForm extends JFrame {
 		gbc.gridy = 2;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
-		label3.setText("Do");
+		label3.setText("To");
 		rootPanel.add(label3, gbc);
 
 		JLabel label4 = new JLabel();
@@ -129,7 +139,7 @@ public class MyForm extends JFrame {
 		gbc.gridy = 3;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
-		label4.setText("Punkty");
+		label4.setText("Points");
 		rootPanel.add(label4, gbc);
 
 		// TEXT FIELDS
@@ -177,7 +187,7 @@ public class MyForm extends JFrame {
 		gbc.gridy = 4;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
-		calculateButton.setText("Licz!");
+		calculateButton.setText("Run!");
 		rootPanel.add(calculateButton, gbc);
 
 		// DYNAMIC LABELS
@@ -187,7 +197,7 @@ public class MyForm extends JFrame {
 		gbc.gridy = 4;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
-		resultLabel.setText("czekam");
+		resultLabel.setText("waiting");
 		rootPanel.add(resultLabel, gbc);
 
 		timeLabel = new JLabel();
@@ -195,7 +205,7 @@ public class MyForm extends JFrame {
 		gbc.gridy = 5;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
-		timeLabel.setText("czas = ?");
+		timeLabel.setText("time = ?");
 		rootPanel.add(timeLabel, gbc);
 
 		// RADIO's
