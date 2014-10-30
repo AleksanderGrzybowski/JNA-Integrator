@@ -19,7 +19,9 @@ public class MyForm extends JFrame {
 	private JButton calculateButton;
 
 	private JRadioButton useCradioButton;
-	private JRadioButton useASMradioButton;
+	private JRadioButton useASM_FPUradioButton;
+	private JRadioButton useASM_SSEradioButton;
+
 	private ButtonGroup useGroup;
 
 	private JPanel rootPanel;
@@ -65,8 +67,10 @@ public class MyForm extends JFrame {
 
 					if (useCradioButton.isSelected()) {
 						integrator = new CIntegrator();
-					} else {
+					} else if (useASM_FPUradioButton.isSelected()) {
 						integrator = new AsmFPUIntegrator();
+					} else {
+						integrator = new AsmSSEIntegrator();
 					}
 
 					result = integrator.integrate(left, right, points, func);
@@ -193,17 +197,25 @@ public class MyForm extends JFrame {
 
 		// RADIO's
 
-		useASMradioButton = new JRadioButton("asm");
+		useASM_FPUradioButton = new JRadioButton("asm_FPU");
 		gbc.gridx = 0;
 		gbc.gridy = 5;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
 		gbc.anchor = GridBagConstraints.WEST;
-		rootPanel.add(useASMradioButton, gbc);
+		rootPanel.add(useASM_FPUradioButton, gbc);
+
+		useASM_SSEradioButton = new JRadioButton("asm_SSE");
+		gbc.gridx = 0;
+		gbc.gridy = 6;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.anchor = GridBagConstraints.WEST;
+		rootPanel.add(useASM_SSEradioButton, gbc);
 
 		useCradioButton = new JRadioButton("C");
 		gbc.gridx = 0;
-		gbc.gridy = 6;
+		gbc.gridy = 7;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
 		gbc.anchor = GridBagConstraints.WEST;
@@ -211,7 +223,8 @@ public class MyForm extends JFrame {
 
 		useGroup = new ButtonGroup();
 		useGroup.add(useCradioButton);
-		useGroup.add(useASMradioButton);
+		useGroup.add(useASM_FPUradioButton);
+		useGroup.add(useASM_SSEradioButton);
 
 
 		useCradioButton.setSelected(true);

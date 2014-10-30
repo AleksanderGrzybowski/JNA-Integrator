@@ -8,6 +8,22 @@ public class IntegratorTest {
 	public void test_all() throws Exception {
 		doAllTests(new CIntegrator());
 		doAllTests(new AsmFPUIntegrator());
+		doAllTests(new AsmSSEIntegrator());
+
+//		System.out.println("START");
+//		double expected, actual;
+//		double left, right;
+//		String function;
+//		final int POINTS = 11;
+//		Integrator i = new AsmSSEIntegrator();
+//
+//		function = "1";
+//		left = -10;
+//		right = 10;
+//		expected = 20;
+//		actual = i.integrate(left, right, POINTS, function).result;
+//		assertEquals(expected, actual, 0.01);
+//		System.out.println("KONIEC");
 	}
 
 	private void doAllTests(Integrator integrator) throws Exception {
