@@ -1,6 +1,7 @@
 import exceptions.IntegrationNumericError;
 import exceptions.InvalidInputFunctionError;
 import exceptions.PlatformLibraryNotFoundException;
+import plotter.Plotter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -54,6 +55,8 @@ public class MyForm extends JFrame {
 				timeLabel.setText("" + result.timeNS / 10000000.0 + " ms");
 				System.out.println("Using " + integrator.getClass() + ", result = " + result.result);
 				resultLabel.setText("S = " + result.result);
+				graph.setIcon(new ImageIcon(new Plotter(300, 100).plot(left, right, func)));
+				pack(); // ??
 
 			} catch (InvalidInputFunctionError ee) {
 				resultLabel.setText("function input error");
@@ -82,6 +85,8 @@ public class MyForm extends JFrame {
 	private JRadioButton useASM_FPUradioButton;
 	private JRadioButton useASM_SSEradioButton;
 	private JRadioButton useJAVAradioButton;
+
+	private JLabel graph;
 
 	private ButtonGroup useGroup;
 
@@ -247,6 +252,14 @@ public class MyForm extends JFrame {
 		useGroup.add(useASM_FPUradioButton);
 		useGroup.add(useASM_SSEradioButton);
 		useGroup.add(useJAVAradioButton);
+
+		graph = new JLabel();
+		gbc.gridx = 0;
+		gbc.gridy = 9;
+		gbc.gridwidth = 3;
+		gbc.gridheight = 3;
+		gbc.anchor = GridBagConstraints.CENTER;
+		rootPanel.add(graph, gbc);
 
 
 		useCradioButton.setSelected(true);
