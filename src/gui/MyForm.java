@@ -1,6 +1,10 @@
+package gui;
+
 import exceptions.IntegrationNumericError;
 import exceptions.InvalidInputFunctionError;
 import exceptions.PlatformLibraryNotFoundException;
+import implems.*;
+import misc.IntegrationResult;
 import plotter.Plotter;
 
 import javax.swing.*;
@@ -69,7 +73,7 @@ public class MyForm extends JFrame {
 
 	;
 
-	public static final String WINDOW_TITLE = "JNA-Integrator";
+	public static final String WINDOW_TITLE = "JNA-implems.Integrator";
 
 	private JTextField functionField;
 	private JTextField leftField;

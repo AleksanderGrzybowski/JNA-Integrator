@@ -29,7 +29,7 @@
     <target name="dist" depends="clean,compile,junit">
         <jar destfile="prod/prod.jar" basedir="build" excludes="**/*Test.class">
             <manifest>
-                <attribute name="Main-Class" value="MyForm"/>
+                <attribute name="Main-Class" value="gui.MyForm"/>
                 <attribute name="Class-Path" value="exp4j.jar jna.jar jna-plat.jar"/>
             </manifest>
         </jar>

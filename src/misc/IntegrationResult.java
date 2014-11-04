@@ -1,3 +1,5 @@
+package misc;
+
 public class IntegrationResult {
 	public final double result;
 	public final long timeNS;
