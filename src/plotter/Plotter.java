@@ -12,8 +12,8 @@ public class Plotter extends JFrame {
 	private int width;
 
 	private static final double CEIL_FACTOR = 0.7;
-	public static final Color FUNCTION_COLOR = Color.GREEN;
-	public static final Color AXIS_COLOR = Color.red;
+	private static final Color FUNCTION_COLOR = Color.GREEN;
+	private static final Color AXIS_COLOR = Color.red;
 
 	public Plotter(int width, int height) {
 		this.height = height;
@@ -29,6 +29,7 @@ public class Plotter extends JFrame {
 		g2d.drawLine(0, height/2, width, height/2);
 
 
+		// initialize data structures
 		double t = right - left;
 		double[] points = new double[width];
 		Expression expression = new ExpressionBuilder(functionString).variable("x").build();
@@ -47,7 +48,7 @@ public class Plotter extends JFrame {
 
 		// debug print
 		for (int i = 0; i < width; ++i) {
-			System.out.println("" + i + " " + points[i]);
+			System.out.println("Plotter: " + i + " " + points[i]);
 		}
 
 
@@ -63,9 +64,9 @@ public class Plotter extends JFrame {
 			g2d.drawLine(i, (int) points[i], i + 1, (int) points[i + 1]);
 		}
 
-		// draw area from left to right
+		// draw area from 'left' to 'right'
 		for (int i = width/3; i < 2*width/3; ++i) {
-			g2d.drawLine(i, height/2, i, (int)points[i]);
+			g2d.drawLine(i, height/2 + ((points[i]-height/2)*(-1) > 0 ? -1 : 1), i, (int)points[i]);
 		}
 
 		return bi;
