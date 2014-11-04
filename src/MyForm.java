@@ -108,6 +108,18 @@ public class MyForm extends JFrame {
 
 	private void createUI() {
 
+		// from google 'nimbus look and feel'
+		try {
+			for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+				if ("Nimbus".equals(info.getName())) {
+					UIManager.setLookAndFeel(info.getClassName());
+					break;
+				}
+			}
+		} catch (Exception ignored) {
+			// metal is default
+		}
+
 		GridBagConstraints gbc = new GridBagConstraints();
 		rootPanel = new JPanel();
 		rootPanel.setLayout(new GridBagLayout());
