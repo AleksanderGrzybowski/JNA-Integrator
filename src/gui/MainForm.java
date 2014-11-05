@@ -13,7 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 
-public class MyForm extends JFrame {
+public class MainForm extends JFrame {
 
 	class IntegrateButtonListener implements ActionListener {
 		@Override
@@ -97,7 +97,7 @@ public class MyForm extends JFrame {
 	private JPanel rootPanel;
 
 
-	public MyForm() {
+	public MainForm() {
 		createUI();
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setTitle(WINDOW_TITLE);
@@ -287,6 +287,6 @@ public class MyForm extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		new MyForm();
+		new MainForm();
 	}
 }
