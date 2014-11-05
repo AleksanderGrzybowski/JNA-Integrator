@@ -21,12 +21,10 @@ public class MainForm extends JFrame {
 			double left, right;
 			int points;
 			String func;
-			try {
-				leftField.setText(leftField.getText().replaceAll(",", "."));
-				rightField.setText(rightField.getText().replaceAll(",", "."));
 
-				left = Double.parseDouble(leftField.getText());
-				right = Double.parseDouble(rightField.getText());
+			try {
+				left = Double.parseDouble(leftField.getText().replaceAll(",", "."));
+				right = Double.parseDouble(rightField.getText().replaceAll(",", "."));
 				points = Integer.parseInt(pointsField.getText());
 
 				if (right < left) {
