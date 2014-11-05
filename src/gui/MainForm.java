@@ -73,7 +73,7 @@ public class MainForm extends JFrame {
 		}
 	}
 
-	;
+
 
 	public static final String WINDOW_TITLE = "Integrator";
 
