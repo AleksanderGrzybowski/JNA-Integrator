@@ -12,8 +12,9 @@ public class Plotter extends JFrame {
 	private int width;
 
 	private static final double CEIL_FACTOR = 0.7;
-	private static final Color FUNCTION_COLOR = Color.GREEN;
-	private static final Color AXIS_COLOR = Color.red;
+	private static final Color FUNCTION_COLOR = Color.RED;
+	private static final Color AXIS_COLOR = Color.BLACK;
+	private static final Color BACKGROUND_COLOR = Color.WHITE;
 
 	public Plotter(int width, int height) {
 		this.height = height;
@@ -23,6 +24,10 @@ public class Plotter extends JFrame {
 	public BufferedImage plot(double left, double right, String functionString) {
 		BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
 		Graphics2D g2d = bi.createGraphics();
+
+		// fill background
+		g2d.setColor(BACKGROUND_COLOR);
+		g2d.fillRect(0, 0, width, height);
 
 		// draw x axis
 		g2d.setColor(AXIS_COLOR);
