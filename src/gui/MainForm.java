@@ -15,6 +15,10 @@ import java.awt.event.ActionListener;
 
 public class MainForm extends JFrame {
 
+
+	public static final int PLOT_WIDTH = 300;
+	public static final int PLOT_HEIGHT = 100;
+
 	class IntegrateButtonListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -57,7 +61,7 @@ public class MainForm extends JFrame {
 				timeLabel.setText("" + result.timeNS / 10000000.0 + " ms");
 				System.out.println("Using " + integrator.getClass() + ", result = " + result.result);
 				resultLabel.setText("S = " + result.result);
-				graph.setIcon(new ImageIcon(new Plotter(300, 100).plot(left, right, func)));
+				graph.setIcon(new ImageIcon(new Plotter(PLOT_WIDTH, PLOT_HEIGHT).plot(left, right, func)));
 				pack(); // ??
 
 			} catch (InvalidInputFunctionError ee) {
@@ -71,7 +75,7 @@ public class MainForm extends JFrame {
 
 	;
 
-	public static final String WINDOW_TITLE = "JNA-implems.Integrator";
+	public static final String WINDOW_TITLE = "Integrator";
 
 	private JTextField functionField;
 	private JTextField leftField;
