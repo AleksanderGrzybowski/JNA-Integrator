@@ -85,79 +85,77 @@ fpu_loop:
 ; [esp+24] = tab
 
 
-
+%define SSE_STACK_OFFSET 64+8 ; 4 xmm registers and 2 32-bit registers
 
 integrateASM_SSE:
 
+	; Preserve used 32-bit registers
 	push esi
     push ecx
 
-    ;Push xmm0
+    ; Preserve used xmm registers
     sub     esp, 16
     movdqu  [esp], xmm0
-    ;Push xmm1
     sub     esp, 16
     movdqu  [esp], xmm1
-    ;Push xmm2
     sub     esp, 16
     movdqu  [esp], xmm2
-    ;Push xmm3
     sub     esp, 16
     movdqu  [esp], xmm3
 
 
-    mov esi, [esp+24+8+64] ; w esi wskaźnik
+    mov esi, [TAB+SSE_STACK_OFFSET] ; w esi wskaźnik
 
 
-    movq xmm0, [esi]
-    add esi, [esp+20+8+64]
-    add esi, [esp+20+8+64]
-    add esi, [esp+20+8+64]
-    add esi, [esp+20+8+64]
-    add esi, [esp+20+8+64]
-    add esi, [esp+20+8+64]
-    add esi, [esp+20+8+64]
-    add esi, [esp+20+8+64]
-    movq xmm1, [esi]
+	; add first and last value
+    movq xmm0, [esi] ; first
+    mov ecx, [POINTS+SSE_STACK_OFFSET]
+    shl ecx, 3
+    add esi, ecx
+    movq xmm1, [esi] ; last
     pslldq xmm0, 8
-    addpd xmm0, xmm1
+    addpd xmm0, xmm1 ; add them
 
+	; prepare loop
 
-    mov esi, [esp+24+8+64]
-    add esi, 8 ; skip
+    mov esi, [TAB+SSE_STACK_OFFSET]
+    add esi, 8 ; skip the first
 
-    mov ecx, [esp+20+8+64]
-    sub ecx, 1
-    shr ecx, 1
-petlaSSE:
+    mov ecx, [POINTS+SSE_STACK_OFFSET]
+    sub ecx, 1 ; skip the last
+    shr ecx, 1 ; we add two doubles at the same time, so 2x less iterations
+
+sse_loop:
     movupd xmm3, [esi]
     addpd xmm0, xmm3
     addpd xmm0, xmm3
     add esi, 16
-    loop petlaSSE
+    loop sse_loop
 
 
-    ; dodanie
+    ; sum of coefficients
     movupd xmm1, xmm0
     pslldq xmm1, 8
     addpd xmm0, xmm1
     psrldq xmm0, 8
-    ; xmm0[0-8] ma wynik
+    ; overall sum a_0...a_n is in xmm0[0-8]
 
-    ; końcówka
+    ; multiply by coefficient on the left side of equations
 
-    movq xmm1, [esp+12+8+64]
-    movupd xmm3, [esp+4+8+64]
+    movq xmm1, [RIGHT+SSE_STACK_OFFSET]
+    movupd xmm3, [LEFT+SSE_STACK_OFFSET]
     subsd xmm1, xmm3
     movupd xmm3, [const_TWO]
     divsd xmm1, xmm3
-    ; konwersja
-    movq xmm3, [esp+20+8+64]
+    ; conversion
+    movq xmm3, [POINTS+SSE_STACK_OFFSET]
     cvtdq2pd xmm2, xmm3
-    ; podzielenie
+    ; division
     divsd xmm1, xmm2
     mulsd xmm0, xmm1
 
+
+	; make room on stack, we need to move from xmm0 to st(0)
     push dword 0xaaaaaaaa
     push dword 0xaaaaaaaa
     ;;;;;;;
@@ -168,16 +166,13 @@ petlaSSE:
     pop dword ecx
 
 
-    ;Pop xmm3
+    ; pop everything back
     movdqu  xmm3, [esp]
     add     esp, 16
-    ;Pop xmm2
     movdqu  xmm2, [esp]
     add     esp, 16
-    ;Pop xmm1
     movdqu  xmm1, [esp]
     add     esp, 16
-    ;Pop xmm0
     movdqu  xmm0, [esp]
     add     esp, 16
 
