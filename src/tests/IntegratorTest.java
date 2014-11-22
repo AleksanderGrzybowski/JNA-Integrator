@@ -1,5 +1,6 @@
-package implems;
+package tests;
 
+import implems.*;
 import org.junit.Test;
 
 import java.util.ArrayList;
