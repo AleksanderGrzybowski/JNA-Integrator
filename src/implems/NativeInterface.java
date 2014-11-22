@@ -11,6 +11,4 @@ interface NativeInterface extends Library {
 	public double integrateASM_SSE(double a, double b, int n, Pointer values);
 
 	public int testASMLibrary();
-
-	public double debugFunc(double a, double b, int n, Pointer values);
 }

@@ -179,6 +179,3 @@ sse_loop:
     pop ecx
     pop esi
     ret
-
-debugFunc:
-	ret
