@@ -21,7 +21,6 @@ public class Benchmark {
 		implems.add(JavaIntegrator.class);
 	}
 
-
 	public static void main(String[] args) throws Exception {
 		for (Class<? extends Integrator> clazz : implems) {
 			Integrator instance = clazz.newInstance();

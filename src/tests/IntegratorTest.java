@@ -21,8 +21,6 @@ public class IntegratorTest {
 		T06("2^x", 2, 4, 17.3123, 1000),
 		T07("x^2 + x^(-2)", 1, 2, 17.0 / 6.0, 1000);
 
-		//T01("", , , , 1000),
-
 		TestCase(String function, double left, double right, double expected, int points) {
 			this.left = left;
 			this.right = right;

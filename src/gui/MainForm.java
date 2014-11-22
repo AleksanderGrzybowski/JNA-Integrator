@@ -12,9 +12,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-
 public class MainForm extends JFrame {
-
 
 	public static final int PLOT_WIDTH = 300;
 	public static final int PLOT_HEIGHT = 100;
@@ -73,8 +71,6 @@ public class MainForm extends JFrame {
 		}
 	}
 
-
-
 	public static final String WINDOW_TITLE = "Integrator";
 
 	private JTextField functionField;
@@ -97,7 +93,6 @@ public class MainForm extends JFrame {
 	private ButtonGroup useGroup;
 
 	private JPanel rootPanel;
-
 
 	public MainForm() {
 		createUI();
@@ -279,13 +274,11 @@ public class MainForm extends JFrame {
 		gbc.anchor = GridBagConstraints.CENTER;
 		rootPanel.add(graph, gbc);
 
-
 		useCradioButton.setSelected(true);
 
 		///
 		setVisible(true);
 		pack();
-
 	}
 
 	public static void main(String[] args) {
