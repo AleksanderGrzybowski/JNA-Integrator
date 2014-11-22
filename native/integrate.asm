@@ -6,67 +6,65 @@ section .text
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-testASMLibrary:
+testASMLibrary: ; this is called at load time, to check if lib works
     mov eax, 1337
     ret
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-; [esp+4] = left
-; [esp+12] = right
-; [esp+20] = points
-; [esp+24] = tab
+%define LEFT   esp+4
+%define RIGHT  esp+12
+%define POINTS esp+20
+%define TAB    esp+24
 
-dwa: dq 2.0
+const_TWO: dq 2.0
+
+%define FPU_STACK_OFFSET 12 ; we push 3 registers on call
 
 integrateASM_FPU:
 
-    ;finit
+    ; there used to be 'finit' right at the start
+    ; but it works fine without it
 
-    push eax
-    push ecx
-    push esi
+    push eax ; we use these, we have to preserve them
+    push ecx ; JVM may crash, not sure, but
+    push esi ; better be careful
 
-    ;fld qword [dwa]
-    ;ret
+	mov ecx, [POINTS+FPU_STACK_OFFSET]
 
-	mov ecx, [esp+20+12]
+	fldz
 
-
-	fld1
-	fld1
-	fsub ; 0 w st(0)
-
-	; wartości krańcowe
-	mov esi, [esp+24+12]
-	fld qword [esi]
+	; add the first and the last value
+	; in equation these are coeffs not mutiplied by 2
+	mov esi, [TAB+FPU_STACK_OFFSET]
+	fld qword [esi] ; first
 	fadd
-	shl ecx, 3 ; bo double
-	add esi, ecx
+	shl ecx, 3 ; we need to find the last value
+	add esi, ecx ; so we add offset (multiplied by 8 = sizeof(double))
 	shr ecx, 3
-	fld qword [esi] ; było +12
+	fld qword [esi] ; last
 	fadd
 
+	; prepare the loop
+
+	mov ecx, [POINTS+FPU_STACK_OFFSET]
+	dec ecx ; we will skip the last value, so one less iteration
+	mov esi, [TAB+FPU_STACK_OFFSET]
+	add esi, 8  ; we skip the first value, so start from the second (index of 1)
 
 
-	mov ecx, [esp+20+12]
-	dec ecx
-	mov esi, [esp+24+12]
-	add esi, 8  ;pomijamy a[0] i a[n]
-
-
-petla:
+fpu_loop:
 	fadd qword [esi]
 	fadd qword [esi]
 	add esi, 8
-	loop petla
+	loop fpu_loop
 
-	; w st(0) jest wynik przed pomnożeniem
-
-	fld qword [esp+12+12]
-	fsub qword [esp+4+12]
-	fdiv qword [dwa]
-	fild dword [esp+20+12]
+	; st(0) contains the sum a_0 + 2a_1 + 2a_2 + ... + 2a(n-1) + a_n
+	; now we multiply all that sum by part on the left side of equation
+	fld qword [RIGHT+FPU_STACK_OFFSET]
+	fsub qword [LEFT+FPU_STACK_OFFSET]
+	fdiv qword [const_TWO]
+	fild dword [POINTS+FPU_STACK_OFFSET]
 	fdiv
 	fmul
 
@@ -151,7 +149,7 @@ petlaSSE:
     movq xmm1, [esp+12+8+64]
     movupd xmm3, [esp+4+8+64]
     subsd xmm1, xmm3
-    movupd xmm3, [dwa]
+    movupd xmm3, [const_TWO]
     divsd xmm1, xmm3
     ; konwersja
     movq xmm3, [esp+20+8+64]
