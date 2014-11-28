@@ -4,6 +4,7 @@ import implems.*;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -43,18 +44,22 @@ public class IntegratorTest {
 		implems.add(AsmSSEIntegrator.class);
 		implems.add(JavaIntegrator.class);
 
+		List<Integer> threadCombinations = Arrays.asList(1, 2, 4, 10);
+
 		for (Class<? extends Integrator> clazz : implems) {
-			Integrator instance = clazz.newInstance();
-			System.out.println("****** Starting test routine for " + instance.getClass() + " ******");
+			for (int threads : threadCombinations) {
+				Integrator instance = clazz.newInstance();
+				System.out.println("****** Starting test routine for " + instance.getClass() + " (threads: " + threads + ") ******");
 
-			for (TestCase c : TestCase.values()) {
-				double expected = c.expected;
-				double actual = instance.integrate(c.left, c.right, c.points, c.function, 3).result;
-				System.out.println("Expected = " + expected + " actual = " + actual);
-				assertEquals(expected, actual, 0.01);
+				for (TestCase c : TestCase.values()) {
+					double expected = c.expected;
+					double actual = instance.integrate(c.left, c.right, c.points, c.function, threads).result;
+					System.out.println("Expected = " + expected + " actual = " + actual);
+					assertEquals(expected, actual, 0.01);
+				}
+
+				System.out.println("****** Finished test routine for " + instance.getClass() + " ******\n");
 			}
-
-			System.out.println("****** Finished test routine for " + instance.getClass() + " ******");
 		}
 	}
 }
