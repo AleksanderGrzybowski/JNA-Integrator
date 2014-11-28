@@ -13,6 +13,8 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
 
 
 public abstract class Integrator {
@@ -34,9 +36,53 @@ public abstract class Integrator {
 	}
 
 
+	public IntegrationResult integrate(double left, double right, int numberOfPoints, final String functionString, int threads) throws
+			IntegrationNumericError, InvalidInputFunctionError {
+
+
+		double slice = (right - left) / (double) threads;
+		List<Runnable> tasks = new ArrayList<Runnable>();
+		final CountDownLatch latch = new CountDownLatch(threads);
+		final Set<IntegrationResult> resultSet = Collections.synchronizedSet(new HashSet<IntegrationResult>());
+		final Set<Exception> exceptions = Collections.synchronizedSet(new HashSet<Exception>());
+
+		for (int i = 0; i < threads; ++i) {
+			final double threadLeft = left + i * slice;
+			final double threadRight = left + (i + 1) * slice;
+			final int threadPoints = numberOfPoints / threads;
+
+			tasks.add(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						IntegrationResult ir = integrateSingle(threadLeft, threadRight, threadPoints, functionString);
+						resultSet.add(ir);
+						latch.countDown();
+					} catch (Exception e) {
+						exceptions.add(e);
+					}
+
+				}
+			});
+
+		}
+
+		for (Runnable r : tasks) {
+			new Thread(r).start();
+		}
+		try {
+			latch.await();
+		} catch (InterruptedException ignored) {
+			ignored.printStackTrace();
+		}
+
+		return IntegrationResult.combine(resultSet);
+	}
+
+
 	// We have points x0, x1, x2 ... x(n-1) xn, so in fact the number of points is numberOfPoints+1
 	// it doesn't matter actually, when we have like a million points
-	public IntegrationResult integrate(double left, double right, int numberOfPoints, String functionString) throws
+	public IntegrationResult integrateSingle(double left, double right, int numberOfPoints, String functionString) throws
 			IntegrationNumericError, InvalidInputFunctionError {
 
 		// numberOfPoints must be even, so SSE can work (it can be fixed by checking that first, but yeah...)
@@ -74,8 +120,7 @@ public abstract class Integrator {
 		return new IntegrationResult(result, time);
 	}
 
-	abstract double callAlgorithm(double left, double right, int numberOfPoints, Pointer values) throws
-			IntegrationNumericError, InvalidInputFunctionError;
+	abstract double callAlgorithm(double left, double right, int numberOfPoints, Pointer values);
 }
 
 

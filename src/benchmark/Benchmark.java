@@ -28,7 +28,7 @@ public class Benchmark {
 
 			long sumOfTimes = 0;
 			for (int i = 0; i < iters; ++i) {
-				sumOfTimes += instance.integrate(left, right, points, functionString).timeNS;
+				sumOfTimes += instance.integrate(left, right, points, functionString, 1).timeNS;
 			}
 
 			System.out.println("" + ((double) (sumOfTimes / iters)) / (1000000.0) + " ms\n");

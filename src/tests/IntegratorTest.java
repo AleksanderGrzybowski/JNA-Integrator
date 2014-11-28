@@ -49,7 +49,7 @@ public class IntegratorTest {
 
 			for (TestCase c : TestCase.values()) {
 				double expected = c.expected;
-				double actual = instance.integrate(c.left, c.right, c.points, c.function).result;
+				double actual = instance.integrate(c.left, c.right, c.points, c.function, 3).result;
 				System.out.println("Expected = " + expected + " actual = " + actual);
 				assertEquals(expected, actual, 0.01);
 			}

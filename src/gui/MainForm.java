@@ -23,12 +23,12 @@ public class MainForm extends JFrame {
 			double left, right;
 			int points;
 			String func;
-
+			int threads;
 			try {
 				left = Double.parseDouble(leftField.getText().replaceAll(",", "."));
 				right = Double.parseDouble(rightField.getText().replaceAll(",", "."));
 				points = Integer.parseInt(pointsField.getText());
-
+				threads = Integer.parseInt(threadsField.getText());
 				if (right < left) {
 					resultLabel.setText("range must be increasing");
 					return;
@@ -55,7 +55,7 @@ public class MainForm extends JFrame {
 					integrator = new JavaIntegrator();
 				}
 
-				result = integrator.integrate(left, right, points, func);
+				result = integrator.integrate(left, right, points, func, threads);
 				timeLabel.setText("" + result.timeNS / 10000000.0 + " ms");
 				System.out.println("Using " + integrator.getClass() + ", result = " + result.result);
 				resultLabel.setText("S = " + result.result);
@@ -77,6 +77,7 @@ public class MainForm extends JFrame {
 	private JTextField leftField;
 	private JTextField rightField;
 	private JTextField pointsField;
+	private JTextField threadsField;
 
 	private JLabel resultLabel;
 	private JLabel timeLabel;
@@ -160,6 +161,14 @@ public class MainForm extends JFrame {
 		label4.setText("Points");
 		rootPanel.add(label4, gbc);
 
+		JLabel label5 = new JLabel();
+		gbc.gridx = 0;
+		gbc.gridy = 4;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		label5.setText("Threads");
+		rootPanel.add(label5, gbc);
+
 		// TEXT FIELDS
 
 		functionField = new JTextField();
@@ -198,11 +207,20 @@ public class MainForm extends JFrame {
 		gbc.gridheight = 1;
 		rootPanel.add(pointsField, gbc);
 
+		threadsField = new JTextField();
+		threadsField.setColumns(20);
+		threadsField.setText("2");
+		gbc.gridx = 1;
+		gbc.gridy = 4;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		rootPanel.add(threadsField, gbc);
+
 		// BUTTONS
 
 		calculateButton = new JButton();
 		gbc.gridx = 0;
-		gbc.gridy = 4;
+		gbc.gridy = 5;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
 		calculateButton.setText("Run!");
@@ -212,7 +230,7 @@ public class MainForm extends JFrame {
 
 		resultLabel = new JLabel();
 		gbc.gridx = 1;
-		gbc.gridy = 4;
+		gbc.gridy = 5;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
 		resultLabel.setText("waiting");
@@ -220,7 +238,7 @@ public class MainForm extends JFrame {
 
 		timeLabel = new JLabel();
 		gbc.gridx = 1;
-		gbc.gridy = 5;
+		gbc.gridy = 6;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
 		timeLabel.setText("time = ?");
@@ -230,7 +248,7 @@ public class MainForm extends JFrame {
 
 		useASM_FPUradioButton = new JRadioButton("asm_FPU");
 		gbc.gridx = 0;
-		gbc.gridy = 5;
+		gbc.gridy = 6;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
 		gbc.anchor = GridBagConstraints.WEST;
@@ -238,7 +256,7 @@ public class MainForm extends JFrame {
 
 		useASM_SSEradioButton = new JRadioButton("asm_SSE");
 		gbc.gridx = 0;
-		gbc.gridy = 6;
+		gbc.gridy = 7;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
 		gbc.anchor = GridBagConstraints.WEST;
@@ -246,7 +264,7 @@ public class MainForm extends JFrame {
 
 		useCradioButton = new JRadioButton("C");
 		gbc.gridx = 0;
-		gbc.gridy = 7;
+		gbc.gridy = 8;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
 		gbc.anchor = GridBagConstraints.WEST;
@@ -254,7 +272,7 @@ public class MainForm extends JFrame {
 
 		useJAVAradioButton = new JRadioButton("Java");
 		gbc.gridx = 0;
-		gbc.gridy = 8;
+		gbc.gridy = 9;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
 		gbc.anchor = GridBagConstraints.WEST;
@@ -268,7 +286,7 @@ public class MainForm extends JFrame {
 
 		graph = new JLabel();
 		gbc.gridx = 0;
-		gbc.gridy = 9;
+		gbc.gridy = 10;
 		gbc.gridwidth = 3;
 		gbc.gridheight = 3;
 		gbc.anchor = GridBagConstraints.CENTER;
