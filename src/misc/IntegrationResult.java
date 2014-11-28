@@ -11,7 +11,7 @@ public class IntegrationResult {
 		this.timeNS = timeNS;
 	}
 
-	public static IntegrationResult combine(Collection<IntegrationResult> results) {
+	public static IntegrationResult sumOf(Collection<IntegrationResult> results) {
 		double res = 0.0;
 		long tim = 0;
 

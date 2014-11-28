@@ -33,7 +33,6 @@ public class Plotter extends JFrame {
 		g2d.setColor(AXIS_COLOR);
 		g2d.drawLine(0, height/2, width, height/2);
 
-
 		// initialize data structures
 		double t = right - left;
 		double[] points = new double[width];
@@ -50,12 +49,6 @@ public class Plotter extends JFrame {
 		for (int i = 0; i < width; ++i) {
 			points[i] *= (0.5 * height * CEIL_FACTOR) / maxMag;
 		}
-
-		// debug print
-		for (int i = 0; i < width; ++i) {
-			System.out.println("Plotter: " + i + " " + points[i]);
-		}
-
 
 		for (int i = 0; i < width; ++i) {
 			points[i] *= -1; // BufferedImage's x axis points down

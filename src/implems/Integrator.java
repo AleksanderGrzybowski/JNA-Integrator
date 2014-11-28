@@ -29,43 +29,38 @@ public abstract class Integrator {
 
 		double slice = (right - left) / (double) numberOfThreads;
 		final int threadPoints = numberOfPoints / numberOfThreads;
-		List<Runnable> tasks = new ArrayList<Runnable>();
+		List<Runnable> tasks = new ArrayList<>();
 		final CountDownLatch latch = new CountDownLatch(numberOfThreads);
 
-		final Set<IntegrationResult> resultSet = Collections.synchronizedSet(new HashSet<IntegrationResult>());
-		final Set<Exception> exceptions = Collections.synchronizedSet(new HashSet<Exception>());
+		final Set<IntegrationResult> resultSet = Collections.synchronizedSet(new HashSet<>());
+		final Set<Exception> exceptions = Collections.synchronizedSet(new HashSet<>());
 
 		for (int i = 0; i < numberOfThreads; ++i) {
 			final double threadLeft = left + i * slice;
 			final double threadRight = left + (i + 1) * slice;
 
-			tasks.add(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						IntegrationResult ir = integrateSingle(threadLeft, threadRight, threadPoints, functionString);
-						resultSet.add(ir);
-					} catch (Exception e) {
-						exceptions.add(e);
-					}
-					latch.countDown();
+			tasks.add(() -> {
+				try {
+					IntegrationResult ir = integrateSingle(threadLeft, threadRight, threadPoints, functionString);
+					resultSet.add(ir);
+				} catch (Exception e) {
+					exceptions.add(e);
 				}
+				latch.countDown();
 			});
-
 		}
 
 		for (Runnable r : tasks) {
 			new Thread(r).start();
 		}
+
 		try {
 			latch.await();
-		} catch (InterruptedException ignored) {
+		} catch (InterruptedException ignored) { // should never happen
 			ignored.printStackTrace();
 		}
 
-		if (exceptions.isEmpty()) {
-			System.out.println("There were no exceptions in threads");
-		} else {
+		if (!exceptions.isEmpty()) {
 			System.out.println("There were " + exceptions.size() + " EXCEPTIONS in threads");
 			Exception e = exceptions.iterator().next();
 			if (e instanceof IntegrationNumericError) {
@@ -77,7 +72,7 @@ public abstract class Integrator {
 			}
 		}
 
-		return IntegrationResult.combine(resultSet);
+		return IntegrationResult.sumOf(resultSet);
 	}
 
 
@@ -105,11 +100,13 @@ public abstract class Integrator {
 			// be careful, we use <= here, so one more iteration
 			for (int i = 0; i <= numberOfPoints; ++i) {
 				double y = expression.setVariable("x", left + width * i).evaluate();
+
 				if (y == Double.NaN || y == Double.NEGATIVE_INFINITY || y == Double.POSITIVE_INFINITY)
 					throw new IntegrationNumericError();
+
 				memory.setDouble(i * sizeofDouble, y);
 			}
-		} catch (ArithmeticException ee) { // div by 0 i think
+		} catch (ArithmeticException ee) { // div by 0
 			throw new IntegrationNumericError();
 		}
 
@@ -118,6 +115,7 @@ public abstract class Integrator {
 		double result = callAlgorithm(left, right, numberOfPoints, memory);
 		///////////////////////////
 		time = System.nanoTime() - time;
+
 		return new IntegrationResult(result, time);
 	}
 

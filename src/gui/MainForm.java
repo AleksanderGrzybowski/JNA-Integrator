@@ -19,7 +19,7 @@ public class MainForm extends JFrame {
 
 	class IntegrateButtonListener implements ActionListener {
 		@Override
-		public void actionPerformed(ActionEvent ignored) {
+		public void actionPerformed(ActionEvent event) {
 			double left, right;
 			int numberOfPoints, numberOfThreads;
 			String functionString;
@@ -59,16 +59,17 @@ public class MainForm extends JFrame {
 				result = integrator.integrate(left, right, numberOfPoints, functionString, numberOfThreads);
 
 				timeLabel.setText("" + result.timeNS / 1000000.0 + " ms");
-				System.out.println("Using " + integrator.getClass() + ", result = " + result.result);
 				resultLabel.setText("S = " + result.result);
-				graph.setIcon(new ImageIcon(new Plotter(PLOT_WIDTH, PLOT_HEIGHT).plot(left, right, functionString)));
+				graphLabel.setIcon(new ImageIcon(new Plotter(PLOT_WIDTH, PLOT_HEIGHT).plot(left, right, functionString)));
+
+				System.out.println("Using " + integrator.getClass() + ", result = " + result.result);
 				pack(); // ??
 
 			} catch (InvalidInputFunctionError ee) {
 				resultLabel.setText("function input error");
 			} catch (IntegrationNumericError ee) {
 				resultLabel.setText("calculation error");
-			} catch (PlatformLibraryNotFoundException ee) {
+			} catch (PlatformLibraryNotFoundException ignored) {
 			} // we check before!
 		}
 	}
@@ -83,6 +84,7 @@ public class MainForm extends JFrame {
 
 	private JLabel resultLabel;
 	private JLabel timeLabel;
+	private JLabel graphLabel;
 
 	private JButton calculateButton;
 
@@ -90,8 +92,6 @@ public class MainForm extends JFrame {
 	private JRadioButton useASM_FPUradioButton;
 	private JRadioButton useASM_SSEradioButton;
 	private JRadioButton useJAVAradioButton;
-
-	private JLabel graph;
 
 	private ButtonGroup useGroup;
 
@@ -286,13 +286,13 @@ public class MainForm extends JFrame {
 		useGroup.add(useASM_SSEradioButton);
 		useGroup.add(useJAVAradioButton);
 
-		graph = new JLabel();
+		graphLabel = new JLabel();
 		gbc.gridx = 0;
 		gbc.gridy = 10;
 		gbc.gridwidth = 3;
 		gbc.gridheight = 3;
 		gbc.anchor = GridBagConstraints.CENTER;
-		rootPanel.add(graph, gbc);
+		rootPanel.add(graphLabel, gbc);
 
 		useCradioButton.setSelected(true);
 
