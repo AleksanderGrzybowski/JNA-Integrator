@@ -19,23 +19,24 @@ public class MainForm extends JFrame {
 
 	class IntegrateButtonListener implements ActionListener {
 		@Override
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(ActionEvent ignored) {
 			double left, right;
-			int points;
-			String func;
-			int threads;
+			int numberOfPoints, numberOfThreads;
+			String functionString;
+
 			try {
 				left = Double.parseDouble(leftField.getText().replaceAll(",", "."));
 				right = Double.parseDouble(rightField.getText().replaceAll(",", "."));
-				points = Integer.parseInt(pointsField.getText());
-				threads = Integer.parseInt(threadsField.getText());
+				numberOfPoints = Integer.parseInt(pointsField.getText());
+				numberOfThreads = Integer.parseInt(threadsField.getText());
+
 				if (right < left) {
 					resultLabel.setText("range must be increasing");
 					return;
 				}
 
-				func = functionField.getText();
-			} catch (NumberFormatException ee) {
+				functionString = functionField.getText();
+			} catch (NumberFormatException e) {
 				resultLabel.setText("input error");
 				return;
 			}
@@ -44,7 +45,7 @@ public class MainForm extends JFrame {
 				IntegrationResult result;
 				Integrator integrator;
 
-				// may replace with sth more elegant, but not worth it
+				// may replace with sth more elegant
 				if (useCradioButton.isSelected()) {
 					integrator = new CIntegrator();
 				} else if (useASM_FPUradioButton.isSelected()) {
@@ -55,11 +56,12 @@ public class MainForm extends JFrame {
 					integrator = new JavaIntegrator();
 				}
 
-				result = integrator.integrate(left, right, points, func, threads);
-				timeLabel.setText("" + result.timeNS / 10000000.0 + " ms");
+				result = integrator.integrate(left, right, numberOfPoints, functionString, numberOfThreads);
+
+				timeLabel.setText("" + result.timeNS / 1000000.0 + " ms");
 				System.out.println("Using " + integrator.getClass() + ", result = " + result.result);
 				resultLabel.setText("S = " + result.result);
-				graph.setIcon(new ImageIcon(new Plotter(PLOT_WIDTH, PLOT_HEIGHT).plot(left, right, func)));
+				graph.setIcon(new ImageIcon(new Plotter(PLOT_WIDTH, PLOT_HEIGHT).plot(left, right, functionString)));
 				pack(); // ??
 
 			} catch (InvalidInputFunctionError ee) {
