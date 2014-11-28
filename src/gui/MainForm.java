@@ -100,7 +100,7 @@ public class MainForm extends JFrame {
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setTitle(WINDOW_TITLE);
 
-		if (!Integrator.isPlatformLibraryPresent()) {
+		if (!LibraryWrapper.isPlatformLibraryPresent()) {
 			JOptionPane.showMessageDialog(rootPanel, "Could not find platform library!");
 			System.exit(1); // ??
 		}

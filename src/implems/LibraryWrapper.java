@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
-class LibraryWrapper {
+public class LibraryWrapper {
 
 	public static final int ASM_TEST_MAGIC_NUMBER = 1337;
 	private static NativeInterface library;
@@ -55,5 +55,15 @@ class LibraryWrapper {
 		} catch (UnsupportedEncodingException e) {
 		}
 		throw new RuntimeException();
+	}
+
+	public static boolean isPlatformLibraryPresent() {
+		// may change, however, if there fails it will fail everywhere else
+		try {
+			new AsmFPUIntegrator();
+			return true;
+		} catch (PlatformLibraryNotFoundException e) {
+			return false;
+		}
 	}
 }

@@ -22,31 +22,22 @@ public abstract class Integrator {
 		library = LibraryWrapper.getLibrary();
 	}
 
-	public static boolean isPlatformLibraryPresent() {
-		// may change, however, if there fails it will fail everywhere else
-		try {
-			new AsmFPUIntegrator();
-			return true;
-		} catch (PlatformLibraryNotFoundException e) {
-			return false;
-		}
-	}
-
-
-	public IntegrationResult integrate(double left, double right, int numberOfPoints, final String functionString, int threads) throws
+	public IntegrationResult integrate(double left, double right,
+	                                   int numberOfPoints, final String functionString, int numberOfThreads) throws
 			IntegrationNumericError, InvalidInputFunctionError {
 
 
-		double slice = (right - left) / (double) threads;
+		double slice = (right - left) / (double) numberOfThreads;
+		final int threadPoints = numberOfPoints / numberOfThreads;
 		List<Runnable> tasks = new ArrayList<Runnable>();
-		final CountDownLatch latch = new CountDownLatch(threads);
+		final CountDownLatch latch = new CountDownLatch(numberOfThreads);
+
 		final Set<IntegrationResult> resultSet = Collections.synchronizedSet(new HashSet<IntegrationResult>());
 		final Set<Exception> exceptions = Collections.synchronizedSet(new HashSet<Exception>());
 
-		for (int i = 0; i < threads; ++i) {
+		for (int i = 0; i < numberOfThreads; ++i) {
 			final double threadLeft = left + i * slice;
 			final double threadRight = left + (i + 1) * slice;
-			final int threadPoints = numberOfPoints / threads;
 
 			tasks.add(new Runnable() {
 				@Override
@@ -54,11 +45,10 @@ public abstract class Integrator {
 					try {
 						IntegrationResult ir = integrateSingle(threadLeft, threadRight, threadPoints, functionString);
 						resultSet.add(ir);
-						latch.countDown();
 					} catch (Exception e) {
 						exceptions.add(e);
 					}
-
+					latch.countDown();
 				}
 			});
 
@@ -71,6 +61,20 @@ public abstract class Integrator {
 			latch.await();
 		} catch (InterruptedException ignored) {
 			ignored.printStackTrace();
+		}
+
+		if (exceptions.isEmpty()) {
+			System.out.println("There were no exceptions in threads");
+		} else {
+			System.out.println("There were " + exceptions.size() + " EXCEPTIONS in threads");
+			Exception e = exceptions.iterator().next();
+			if (e instanceof IntegrationNumericError) {
+				throw new IntegrationNumericError();
+			} else if (e instanceof InvalidInputFunctionError) {
+				throw new InvalidInputFunctionError();
+			} else {
+				System.out.println("There was an unknown exception in some thread: " + e);
+			}
 		}
 
 		return IntegrationResult.combine(resultSet);

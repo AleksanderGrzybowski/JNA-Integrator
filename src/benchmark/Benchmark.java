@@ -10,7 +10,7 @@ public class Benchmark {
 	static String functionString = "sin(x)";
 	static double left = 0;
 	static double right = Math.PI * 2;
-	static int points = 1000 * 1000;
+	static int points = 1_000_000;
 	static int iters = 10;
 
 	static List<Class<? extends Integrator>> implems = new ArrayList<Class<? extends Integrator>>();
@@ -28,7 +28,7 @@ public class Benchmark {
 
 			long sumOfTimes = 0;
 			for (int i = 0; i < iters; ++i) {
-				sumOfTimes += instance.integrate(left, right, points, functionString, 1).timeNS;
+				sumOfTimes += instance.integrate(left, right, points, functionString, 10).timeNS;
 			}
 
 			System.out.println("" + ((double) (sumOfTimes / iters)) / (1000000.0) + " ms\n");
