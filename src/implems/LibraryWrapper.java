@@ -6,42 +6,50 @@ import exceptions.PlatformLibraryNotFoundException;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class LibraryWrapper {
 
 	public static final int ASM_TEST_MAGIC_NUMBER = 1337;
 	private static NativeInterface library;
 
+	private static Logger logger = Logger.getLogger(LibraryWrapper.class.getName());
+
+	{
+
+	}
+
 	public static NativeInterface getLibrary() throws PlatformLibraryNotFoundException {
 		if (library != null) {
-			System.out.println("****** implems.LibraryWrapper.getInstance() giving already initialized one");
+			logger.log(Level.INFO, "implems.LibraryWrapper.getInstance() giving already initialized one");
 			return library;
 		} else {
-			System.out.println("****** implems.LibraryWrapper.getInstance() trying to load");
-			System.out.println(" * java.library.path -> " + System.getProperty("java.library.path"));
-			System.out.println(" * user.dir -> " + System.getProperty("user.dir"));
-			System.out.println(" * getCurrentDir() -> " + getCurrentDir());
-			System.out.println(" * Setting home/kelog library path and current dir, remove in release");
+			logger.log(Level.INFO, "implems.LibraryWrapper.getInstance() trying to load");
+			logger.log(Level.INFO, " * java.library.path -> " + System.getProperty("java.library.path"));
+			logger.log(Level.INFO, " * user.dir -> " + System.getProperty("user.dir"));
+			logger.log(Level.INFO, " * getCurrentDir() -> " + getCurrentDir());
+			logger.log(Level.INFO, " * Setting home/kelog library path and current dir, remove in release");
 			System.setProperty("jna.library.path", getCurrentDir() + ":/home/kelog/Kodzenie/JNA-Integrator/native");
-			System.out.println(" * jna.library.path -> " + System.getProperty("jna.library.path"));
+			logger.log(Level.INFO, " * jna.library.path -> " + System.getProperty("jna.library.path"));
 
-			System.out.println(" * Trying to load platform dependent library...");
+			logger.log(Level.INFO, " * Trying to load platform dependent library...");
 			try {
 				library = (NativeInterface) Native.loadLibrary("native", NativeInterface.class);
 			} catch (LinkageError e) {
-				System.out.println(" * ERROR LinkageError, propagating translated one");
+				logger.log(Level.SEVERE, " * ERROR LinkageError, propagating translated one");
 				throw new PlatformLibraryNotFoundException();
 			}
 
-			System.out.println(" * Platform library loaded, testing...");
+			logger.log(Level.INFO, " * Platform library loaded, testing...");
 			if (library.testASMLibrary() == ASM_TEST_MAGIC_NUMBER)
-				System.out.println(" * Test passed");
+				logger.log(Level.INFO, " * Test passed");
 			else {
-				System.out.println(" * Test FAILED, this should never happen!");
+				logger.log(Level.SEVERE, " * Test FAILED, this should never happen!");
 				throw new RuntimeException("Test FAILED!");
 			}
 
-			System.out.println("****** Finished loading ******");
+			logger.log(Level.INFO, "****** Finished loading ******");
 			return library;
 		}
 	}
@@ -54,7 +62,7 @@ public class LibraryWrapper {
 			return new File(decodedPath).getParent();
 		} catch (UnsupportedEncodingException e) {
 		}
-		throw new RuntimeException();
+		throw new RuntimeException(); // should never happen
 	}
 
 	public static boolean isPlatformLibraryPresent() {

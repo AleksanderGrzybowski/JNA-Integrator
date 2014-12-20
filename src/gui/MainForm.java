@@ -11,15 +11,21 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MainForm extends JFrame {
 
 	public static final int PLOT_WIDTH = 300;
 	public static final int PLOT_HEIGHT = 100;
 
+	private Logger logger = Logger.getLogger(MainForm.class.getName());
+
 	class IntegrateButtonListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent event) {
+			logger.log(Level.INFO, "User have clicked INTEGRATE button");
+
 			double left, right;
 			int numberOfPoints, numberOfThreads;
 			String functionString;
@@ -31,15 +37,19 @@ public class MainForm extends JFrame {
 				numberOfThreads = Integer.parseInt(threadsField.getText());
 
 				if (right < left) {
+					logger.log(Level.WARNING, "User have set noncreasing range");
 					resultLabel.setText("range must be increasing");
 					return;
 				}
 
 				functionString = functionField.getText();
 			} catch (NumberFormatException e) {
+				logger.log(Level.WARNING, "User have input something wrong");
 				resultLabel.setText("input error");
 				return;
 			}
+
+			logger.log(Level.INFO, "User input ok");
 
 			try {
 				IntegrationResult result;
@@ -56,18 +66,24 @@ public class MainForm extends JFrame {
 					integrator = new JavaIntegrator();
 				}
 
+				logger.log(Level.INFO, "Starting calculation using " + integrator.getClass()
+						+ "from " + left + " to " + right
+						+ " points " + numberOfPoints);
+
 				result = integrator.integrate(left, right, numberOfPoints, functionString, numberOfThreads);
 
-				timeLabel.setText("" + result.timeNS / 1000000.0 + " ms");
+				timeLabel.setText("" + result.timeNS / 1_000_000.0 + " ms");
 				resultLabel.setText("S = " + result.result);
 				graphLabel.setIcon(new ImageIcon(new Plotter(PLOT_WIDTH, PLOT_HEIGHT).plot(left, right, functionString)));
 
-				System.out.println("Using " + integrator.getClass() + ", result = " + result.result);
+				logger.log(Level.INFO, "Result = " + result.result);
 				pack(); // ??
 
 			} catch (InvalidInputFunctionError ee) {
+				logger.log(Level.WARNING, ee.getClass().toString());
 				resultLabel.setText("function input error");
 			} catch (IntegrationNumericError ee) {
+				logger.log(Level.WARNING, ee.getClass().toString());
 				resultLabel.setText("calculation error");
 			} catch (PlatformLibraryNotFoundException ignored) {
 			} // we check before!
@@ -103,6 +119,7 @@ public class MainForm extends JFrame {
 		setTitle(WINDOW_TITLE);
 
 		if (!LibraryWrapper.isPlatformLibraryPresent()) {
+			logger.log(Level.SEVERE, "Platform library not present! Exiting now.");
 			JOptionPane.showMessageDialog(rootPanel, "Could not find platform library!");
 			System.exit(1); // ??
 		}
