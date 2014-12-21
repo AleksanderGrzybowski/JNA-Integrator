@@ -16,10 +16,6 @@ public class LibraryWrapper {
 
 	private static Logger logger = Logger.getLogger(LibraryWrapper.class.getName());
 
-	{
-
-	}
-
 	public static NativeInterface getLibrary() throws PlatformLibraryNotFoundException {
 		if (library != null) {
 			logger.log(Level.INFO, "implems.LibraryWrapper.getInstance() giving already initialized one");
