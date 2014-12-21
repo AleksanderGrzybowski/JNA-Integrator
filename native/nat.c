@@ -1,18 +1,14 @@
 #include <stdio.h>
 
-
-
-double integrateC(double left, double right, int points, double* wartosci) {
-	double wynik = wartosci[0] + wartosci[points];
+double integrateC(double left, double right, int points, double* values) {
+	double result = values[0] + values[points];
 
 	int i;
 	for (i = 1; i <= (points-1); ++i)
-		wynik += 2*wartosci[i];
-	
+		result += 2*values[i];
 
-	wynik *= ( ((double)(right-left))/(2.0*points));
-
-	return wynik;
+	result *= ( ((double)(right-left))/(2.0*points));
+	return result;
 }
 
 double integrate_debug(double left, double right, int points, double* wartosci) {
