@@ -62,8 +62,10 @@ public class MainForm extends JFrame {
 					integrator = new AsmFPUIntegrator();
 				} else if (useASM_SSEradioButton.isSelected()) {
 					integrator = new AsmSSEIntegrator();
-				} else {
+				} else if (useJAVAradioButton.isSelected()) {
 					integrator = new JavaIntegrator();
+				} else {
+					throw new AssertionError(); // should never happen
 				}
 
 				logger.log(Level.INFO, "Starting calculation using " + integrator.getClass()
