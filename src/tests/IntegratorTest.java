@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 public class IntegratorTest {
 
 	private static final int POINTS = 10_000;
-	private static final List<Integer> threadCombinations = Arrays.asList(1, 2, 4, 10);
+	private static final List<Integer> threadCombinations = Arrays.asList(1, 2, 4);
 
 	private static List<Class<? extends Integrator>> implems = new ArrayList<Class<? extends Integrator>>();
 

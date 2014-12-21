@@ -26,7 +26,10 @@ public class LibraryWrapper {
 			logger.log(Level.INFO, " * user.dir -> " + System.getProperty("user.dir"));
 			logger.log(Level.INFO, " * getCurrentDir() -> " + getCurrentDir());
 			logger.log(Level.INFO, " * Setting home/kelog library path and current dir, remove in release");
+
+			// this is for tests, but the first path (currentDir) is always present
 			System.setProperty("jna.library.path", getCurrentDir() + ":/home/kelog/Kodzenie/JNA-Integrator/native");
+
 			logger.log(Level.INFO, " * jna.library.path -> " + System.getProperty("jna.library.path"));
 
 			logger.log(Level.INFO, " * Trying to load platform dependent library...");
