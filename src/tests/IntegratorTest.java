@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
 
@@ -13,9 +14,10 @@ import static org.junit.Assert.assertEquals;
 public class IntegratorTest {
 
 	private static final int POINTS = 10_000;
-	private static final List<Integer> threadCombinations = Arrays.asList(1, 2, 4, 10, 25, 50, 100);
+	private static final List<Integer> threadCombinations = Arrays.asList(1, 2, 4, 10);
 
 	private static List<Class<? extends Integrator>> implems = new ArrayList<Class<? extends Integrator>>();
+
 	{
 		implems.add(CIntegrator.class);
 		implems.add(AsmFPUIntegrator.class);
@@ -50,6 +52,10 @@ public class IntegratorTest {
 
 	@Test
 	public void test_all() throws Exception {
+		// turn off logging
+		Logger l0 = Logger.getLogger("");
+		l0.removeHandler(l0.getHandlers()[0]);
+
 
 		for (Class<? extends Integrator> clazz : implems) {
 			for (int numberOfThreads : threadCombinations) {
