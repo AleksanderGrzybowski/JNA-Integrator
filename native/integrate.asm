@@ -1,17 +1,21 @@
+; Declarations of global symbols that need to be exported
+
 global integrateASM_FPU:function
 global integrateASM_SSE:function
 global testASMLibrary:function
-global debugFunc:function
+
 section .text
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-testASMLibrary: ; this is called at load time, to check if lib works
+; This function is defensively called on startup
+; to make sure that library was imported and native calls work
+testASMLibrary:
     mov eax, 1337
     ret
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
+; Positions of function arguments passed through the stack, as
+; well as number 2 as a constant
 %define LEFT   esp+4
 %define RIGHT  esp+12
 %define POINTS esp+20
@@ -19,38 +23,50 @@ testASMLibrary: ; this is called at load time, to check if lib works
 
 const_TWO: dq 2.0
 
-%define FPU_STACK_OFFSET 12 ; we push 3 registers on call
+
+; We push 3 4-byte registers on fpu algorithm call
+%define FPU_STACK_OFFSET 12
 
 integrateASM_FPU:
 
     ; there used to be 'finit' right at the start
     ; but it works fine without it
 
-    push eax ; we use these, we have to preserve them
-    push ecx ; JVM may crash, not sure, but
-    push esi ; better be careful
+    ; preserve used registers
+    ; I'm not sure if it is needed
+    ; but JVM was once crashing without it
 
-	mov ecx, [POINTS+FPU_STACK_OFFSET]
+    push eax
+    push ecx
+    push esi
 
+    ; we need to have 0 in st(0)
 	fldz
 
-	; add the first and the last value
-	; in equation these are coeffs not mutiplied by 2
+    ; we need to separately add the first and the last value
+    ; in final equation these are coeffs not mutiplied by 2
+
+	; add the first value
 	mov esi, [TAB+FPU_STACK_OFFSET]
-	fld qword [esi] ; first
+	fld qword [esi]
 	fadd
-	shl ecx, 3 ; we need to find the last value
-	add esi, ecx ; so we add offset (multiplied by 8 = sizeof(double))
+
+	; we need to find and load the last value in memory
+	; so take into account the length parameter (in ecx)
+	; and the fact that sizeof(double) == 8, so we multiply
+	; the displacement by 8 (equiv. to << 3)
+	mov ecx, [POINTS+FPU_STACK_OFFSET]
+	shl ecx, 3
+	add esi, ecx
 	shr ecx, 3
-	fld qword [esi] ; last
+	fld qword [esi]
 	fadd
 
-	; prepare the loop
-
+	; prepare the loop to start
 	mov ecx, [POINTS+FPU_STACK_OFFSET]
 	dec ecx ; we will skip the last value, so one less iteration
 	mov esi, [TAB+FPU_STACK_OFFSET]
-	add esi, 8  ; we skip the first value, so start from the second (index of 1)
+	add esi, 8  ; we have already included the first value, so start from the second (index of 1)
 
 
 fpu_loop:
@@ -68,24 +84,18 @@ fpu_loop:
 	fdiv
 	fmul
 
+    ; bring registers back
     pop esi
     pop ecx
     pop eax
 
 	ret
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 
-
-; [esp+4] = left
-; [esp+12] = right
-; [esp+20] = points
-; [esp+24] = tab
-
-
-%define SSE_STACK_OFFSET 64+8 ; 4 xmm registers and 2 32-bit registers
+; 4 xmm registers and 2 32-bit registers
+%define SSE_STACK_OFFSET 64+8
 
 integrateASM_SSE:
 
@@ -103,9 +113,8 @@ integrateASM_SSE:
     sub     esp, 16
     movdqu  [esp], xmm3
 
-
-    mov esi, [TAB+SSE_STACK_OFFSET] ; w esi wskaźnik
-
+    ; esi points to the first value
+    mov esi, [TAB+SSE_STACK_OFFSET]
 
 	; add first and last value
     movq xmm0, [esi] ; first
@@ -116,11 +125,9 @@ integrateASM_SSE:
     pslldq xmm0, 8
     addpd xmm0, xmm1 ; add them
 
-	; prepare loop
-
+	; prepare loop, skip first item and last (already in)
     mov esi, [TAB+SSE_STACK_OFFSET]
     add esi, 8 ; skip the first
-
     mov ecx, [POINTS+SSE_STACK_OFFSET]
     sub ecx, 1 ; skip the last
     shr ecx, 1 ; we add two doubles at the same time, so 2x less iterations
@@ -128,8 +135,8 @@ integrateASM_SSE:
 sse_loop:
     movupd xmm3, [esi]
     addpd xmm0, xmm3
-    addpd xmm0, xmm3
-    add esi, 16
+    addpd xmm0, xmm3 ; twice, cause there is 2*element in equation
+    add esi, 16 ; two doubles
     loop sse_loop
 
 
@@ -156,12 +163,13 @@ sse_loop:
 
 
 	; make room on stack, we need to move from xmm0 to st(0)
+	; in order to pass it back to the caller (by convention)
     push dword 0xaaaaaaaa
     push dword 0xaaaaaaaa
-    ;;;;;;;
+
     movq [esp], xmm0
     fld qword [esp]
-    ;;;;;;;;;;;;
+
     pop dword ecx
     pop dword ecx
 
