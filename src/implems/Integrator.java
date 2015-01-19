@@ -5,7 +5,6 @@ import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import exceptions.IntegrationNumericError;
 import exceptions.InvalidInputFunctionError;
-import exceptions.PlatformLibraryNotFoundException;
 import misc.IntegrationResult;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
@@ -16,14 +15,32 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-public abstract class Integrator {
+public enum Integrator {
+	C_INTEGRATOR {
+		@Override
+		double callAlgorithm(double left, double right, int numberOfPoints, Pointer values) {
+			return library.integrateC(left, right, numberOfPoints, values);
+		}
+	}, SSE_INTEGRATOR {
+		@Override
+		double callAlgorithm(double left, double right, int numberOfPoints, Pointer values) {
+			return library.integrateASM_SSE(left, right, numberOfPoints, values);
+		}
+	}, FPU_INTEGRATOR {
+		@Override
+		double callAlgorithm(double left, double right, int numberOfPoints, Pointer values) {
+			return library.integrateASM_FPU(left, right, numberOfPoints, values);
+		}
+	}, JAVA_INTEGRATOR {
+		@Override
+		double callAlgorithm(double left, double right, int numberOfPoints, Pointer values) {
+			return JavaIntegrator.callAlgorithm(left, right, numberOfPoints, values);
+		}
+	};
 
-	protected NativeInterface library;
+	protected NativeInterface library = LibraryWrapper.getLibrary();
 	private Logger logger = Logger.getLogger(Integrator.class.getName());
 
-	public Integrator() throws PlatformLibraryNotFoundException {
-		library = LibraryWrapper.getLibrary();
-	}
 
 	public IntegrationResult integrate(double left, double right,
 	                                   int numberOfPoints, final String functionString, int numberOfThreads) throws

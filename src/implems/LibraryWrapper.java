@@ -67,7 +67,7 @@ public class LibraryWrapper {
 	public static boolean isPlatformLibraryPresent() {
 		// may change, however, if there fails it will fail everywhere else
 		try {
-			new AsmFPUIntegrator();
+			LibraryWrapper.getLibrary();
 			return true;
 		} catch (PlatformLibraryNotFoundException e) {
 			return false;

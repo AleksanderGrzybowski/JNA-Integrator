@@ -1,9 +1,8 @@
 package tests;
 
-import implems.*;
+import implems.Integrator;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
@@ -15,16 +14,6 @@ public class IntegratorTest {
 
 	private static final int POINTS = 10_000;
 	private static final List<Integer> threadCombinations = Arrays.asList(1, 2, 4);
-
-	private static List<Class<? extends Integrator>> implems = new ArrayList<Class<? extends Integrator>>();
-
-	{
-		implems.add(CIntegrator.class);
-		implems.add(AsmFPUIntegrator.class);
-		implems.add(AsmSSEIntegrator.class);
-		implems.add(JavaIntegrator.class);
-	}
-
 
 	private enum TestCase {
 
@@ -57,21 +46,20 @@ public class IntegratorTest {
 		l0.removeHandler(l0.getHandlers()[0]);
 
 
-		for (Class<? extends Integrator> clazz : implems) {
+		for (Integrator implem:  Integrator.values()) {
 			for (int numberOfThreads : threadCombinations) {
-				Integrator instance = clazz.newInstance();
-				System.out.println("****** Starting test routine for " + instance.getClass() + " (threads: " + numberOfThreads + ") ******");
+				System.out.println("****** Starting test routine for " + implem.getClass() + " (threads: " + numberOfThreads + ") ******");
 
 				for (TestCase testCase : TestCase.values()) {
 					double expected = testCase.expected;
-					double actual = instance.integrate(testCase.left, testCase.right,
+					double actual = implem.integrate(testCase.left, testCase.right,
 							testCase.points, testCase.function, numberOfThreads).result;
 
 					System.out.println("Expected = " + expected + " actual = " + actual);
 					assertEquals(expected, actual, 0.01);
 				}
 
-				System.out.println("****** Finished test routine for " + instance.getClass() + " ******\n");
+				System.out.println("****** Finished test routine for " + implem.getClass() + " ******\n");
 			}
 		}
 	}

@@ -1,15 +1,9 @@
 package implems;
 
 import com.sun.jna.Pointer;
-import exceptions.PlatformLibraryNotFoundException;
 
-public class JavaIntegrator extends Integrator {
-
-	public JavaIntegrator() throws PlatformLibraryNotFoundException {
-	}
-
-	@Override
-	double callAlgorithm(double left, double right, int numberOfPoints, Pointer values) {
+public class JavaIntegrator {
+	public static double callAlgorithm(double left, double right, int numberOfPoints, Pointer values) {
 		double[] array = values.getDoubleArray(0, numberOfPoints + 1);
 
 		double result = array[0] + array[numberOfPoints];

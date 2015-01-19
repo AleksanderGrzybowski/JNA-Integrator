@@ -57,13 +57,13 @@ public class MainForm extends JFrame {
 
 				// may replace with sth more elegant
 				if (useCradioButton.isSelected()) {
-					integrator = new CIntegrator();
+					integrator = Integrator.C_INTEGRATOR;
 				} else if (useASM_FPUradioButton.isSelected()) {
-					integrator = new AsmFPUIntegrator();
+					integrator = Integrator.FPU_INTEGRATOR;
 				} else if (useASM_SSEradioButton.isSelected()) {
-					integrator = new AsmSSEIntegrator();
+					integrator = Integrator.SSE_INTEGRATOR;
 				} else if (useJAVAradioButton.isSelected()) {
-					integrator = new JavaIntegrator();
+					integrator = Integrator.JAVA_INTEGRATOR;
 				} else {
 					throw new AssertionError(); // should never happen
 				}
