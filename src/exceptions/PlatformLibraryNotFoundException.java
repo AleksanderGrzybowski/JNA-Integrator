@@ -1,4 +1,4 @@
 package exceptions;
 
-public class PlatformLibraryNotFoundException extends Exception {
+public class PlatformLibraryNotFoundException extends RuntimeException {
 }
