@@ -1,10 +1,11 @@
 package org.kelog.japroj.tests;
 
-import org.kelog.japroj.implems.Integrator;
 import org.junit.Test;
+import org.kelog.japroj.implems.Integrator;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
 
@@ -38,14 +39,17 @@ public class IntegratorTest {
 		private double expected;
 	}
 
+	@SuppressWarnings("FieldCanBeLocal")
+	private boolean LOGGING_ENABLED = false;
+
 	@Test
 	public void test_all() throws Exception {
-		// turn off logging
-//		Logger l0 = Logger.getLogger("");
-//		l0.removeHandler(l0.getHandlers()[0]);
+		if (!LOGGING_ENABLED) {
+			Logger l0 = Logger.getLogger("");
+			l0.removeHandler(l0.getHandlers()[0]);
+		}
 
-
-		for (Integrator implem:  Integrator.values()) {
+		for (Integrator implem : Integrator.values()) {
 			for (int numberOfThreads : threadCombinations) {
 				System.out.println("****** Starting test routine for " + implem.getClass() + " (threads: " + numberOfThreads + ") ******");
 
