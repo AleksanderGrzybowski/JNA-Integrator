@@ -2,8 +2,8 @@ package org.kelog.japroj.gui;
 
 import org.kelog.japroj.exceptions.IntegrationNumericError;
 import org.kelog.japroj.exceptions.InvalidInputFunctionError;
-import org.kelog.japroj.exceptions.PlatformLibraryNotFoundException;
-import org.kelog.japroj.implems.*;
+import org.kelog.japroj.implems.Integrator;
+import org.kelog.japroj.implems.LibraryWrapper;
 import org.kelog.japroj.misc.IntegrationResult;
 import org.kelog.japroj.plotter.Plotter;
 
@@ -87,8 +87,7 @@ public class MainForm extends JFrame {
 			} catch (IntegrationNumericError ee) {
 				logger.log(Level.WARNING, ee.getClass().toString());
 				resultLabel.setText("calculation error");
-			} catch (PlatformLibraryNotFoundException ignored) {
-			} // we check before!
+			}
 		}
 	}
 
