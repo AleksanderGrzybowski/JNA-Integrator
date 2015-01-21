@@ -1,7 +1,7 @@
-package implems;
+package org.kelog.japroj.implems;
 
 import com.sun.jna.Native;
-import exceptions.PlatformLibraryNotFoundException;
+import org.kelog.japroj.exceptions.PlatformLibraryNotFoundException;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -18,16 +18,16 @@ public class LibraryWrapper {
 
 	public static NativeInterface getLibrary() throws PlatformLibraryNotFoundException {
 		if (library != null) {
-			logger.log(Level.INFO, "implems.LibraryWrapper.getInstance() giving already initialized one");
+			logger.log(Level.INFO, "org.kelog.japroj.implems.LibraryWrapper.getInstance() giving already initialized one");
 			return library;
 		} else {
-			logger.log(Level.INFO, "implems.LibraryWrapper.getInstance() trying to load");
+			logger.log(Level.INFO, "org.kelog.japroj.implems.LibraryWrapper.getInstance() trying to load");
 			logger.log(Level.INFO, " * java.library.path -> " + System.getProperty("java.library.path"));
 			logger.log(Level.INFO, " * user.dir -> " + System.getProperty("user.dir"));
 			logger.log(Level.INFO, " * getCurrentDir() -> " + getCurrentDir());
 			logger.log(Level.INFO, " * Setting home/kelog library path and current dir, remove in release");
 
-			// this is for tests, but the first path (currentDir) is always present
+			// this is for org.kelog.japroj.tests, but the first path (currentDir) is always present
 			System.setProperty("jna.library.path", getCurrentDir() + ":/home/kelog/Kodzenie/JNA-Integrator/native");
 
 			logger.log(Level.INFO, " * jna.library.path -> " + System.getProperty("jna.library.path"));

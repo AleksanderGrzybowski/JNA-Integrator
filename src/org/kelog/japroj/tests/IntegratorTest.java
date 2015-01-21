@@ -1,11 +1,10 @@
-package tests;
+package org.kelog.japroj.tests;
 
-import implems.Integrator;
+import org.kelog.japroj.implems.Integrator;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
 
@@ -42,8 +41,8 @@ public class IntegratorTest {
 	@Test
 	public void test_all() throws Exception {
 		// turn off logging
-		Logger l0 = Logger.getLogger("");
-		l0.removeHandler(l0.getHandlers()[0]);
+//		Logger l0 = Logger.getLogger("");
+//		l0.removeHandler(l0.getHandlers()[0]);
 
 
 		for (Integrator implem:  Integrator.values()) {

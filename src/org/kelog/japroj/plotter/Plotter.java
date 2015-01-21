@@ -1,4 +1,4 @@
-package plotter;
+package org.kelog.japroj.plotter;
 
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;

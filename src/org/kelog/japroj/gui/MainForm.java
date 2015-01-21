@@ -1,11 +1,11 @@
-package gui;
+package org.kelog.japroj.gui;
 
-import exceptions.IntegrationNumericError;
-import exceptions.InvalidInputFunctionError;
-import exceptions.PlatformLibraryNotFoundException;
-import implems.*;
-import misc.IntegrationResult;
-import plotter.Plotter;
+import org.kelog.japroj.exceptions.IntegrationNumericError;
+import org.kelog.japroj.exceptions.InvalidInputFunctionError;
+import org.kelog.japroj.exceptions.PlatformLibraryNotFoundException;
+import org.kelog.japroj.implems.*;
+import org.kelog.japroj.misc.IntegrationResult;
+import org.kelog.japroj.plotter.Plotter;
 
 import javax.swing.*;
 import java.awt.*;

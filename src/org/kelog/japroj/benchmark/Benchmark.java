@@ -1,6 +1,6 @@
-package benchmark;
+package org.kelog.japroj.benchmark;
 
-import implems.Integrator;
+import org.kelog.japroj.implems.Integrator;
 
 import java.util.logging.Logger;
 

@@ -1,11 +1,11 @@
-package implems;
+package org.kelog.japroj.implems;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
-import exceptions.IntegrationNumericError;
-import exceptions.InvalidInputFunctionError;
-import misc.IntegrationResult;
+import org.kelog.japroj.exceptions.IntegrationNumericError;
+import org.kelog.japroj.exceptions.InvalidInputFunctionError;
+import org.kelog.japroj.misc.IntegrationResult;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 

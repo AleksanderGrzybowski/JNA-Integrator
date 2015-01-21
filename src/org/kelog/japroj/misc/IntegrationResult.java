@@ -1,4 +1,4 @@
-package misc;
+package org.kelog.japroj.misc;
 
 import java.util.Collection;
 
