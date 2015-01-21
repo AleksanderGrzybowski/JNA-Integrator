@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 public class LibraryWrapper {
 
 	public static final int ASM_TEST_MAGIC_NUMBER = 1337;
+	public static final String NATIVE_LIBRARY_DIRECTORY_WHEN_TESTING = "native";
 	private static NativeInterface library;
 
 	private static Logger logger = Logger.getLogger(LibraryWrapper.class.getName());
@@ -23,14 +24,16 @@ public class LibraryWrapper {
 		} else {
 			logger.log(Level.INFO, "org.kelog.japroj.implems.LibraryWrapper.getInstance() trying to load");
 			logger.log(Level.INFO, " * java.library.path -> " + System.getProperty("java.library.path"));
-			logger.log(Level.INFO, " * user.dir -> " + System.getProperty("user.dir"));
-			logger.log(Level.INFO, " * getCurrentDir() -> " + getCurrentDir());
-			logger.log(Level.INFO, " * Setting home/kelog library path and current dir, remove in release");
 
-			// this is for org.kelog.japroj.tests, but the first path (currentDir) is always present
-			System.setProperty("jna.library.path", getCurrentDir() + ":/home/kelog/Kodzenie/JNA-Integrator/native");
+			String currentDir = getCurrentDir();
+			logger.log(Level.INFO, " * current directory -> " + currentDir);
 
-			logger.log(Level.INFO, " * jna.library.path -> " + System.getProperty("jna.library.path"));
+			// this multiple-dir search is included so when tests are begin run
+			// they can find the library
+			// when running from jar, it's simpler - library is in the same folder as jar
+			String newJNApath = currentDir + ":" + (currentDir + File.separator + NATIVE_LIBRARY_DIRECTORY_WHEN_TESTING);
+			logger.log(Level.INFO, " * Setting up JNA: jna.library.path is now -> " + newJNApath);
+			System.setProperty("jna.library.path", newJNApath);
 
 			logger.log(Level.INFO, " * Trying to load platform dependent library...");
 			try {
