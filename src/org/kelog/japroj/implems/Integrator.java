@@ -3,11 +3,11 @@ package org.kelog.japroj.implems;
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
+import net.objecthunter.exp4j.Expression;
+import net.objecthunter.exp4j.ExpressionBuilder;
 import org.kelog.japroj.exceptions.IntegrationNumericError;
 import org.kelog.japroj.exceptions.InvalidInputFunctionError;
 import org.kelog.japroj.misc.IntegrationResult;
-import net.objecthunter.exp4j.Expression;
-import net.objecthunter.exp4j.ExpressionBuilder;
 
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
@@ -48,14 +48,13 @@ public enum Integrator {
 
 
 		double slice = (right - left) / (double) numberOfThreads;
-		final int threadPoints = numberOfPoints / numberOfThreads;
-		List<Runnable> tasks = new ArrayList<>();
+		final int numberOfPointsForThread = numberOfPoints / numberOfThreads;
 		final CountDownLatch latch = new CountDownLatch(numberOfThreads);
 
 		final Set<IntegrationResult> resultSet = Collections.synchronizedSet(new HashSet<>());
 		final Set<Exception> exceptions = Collections.synchronizedSet(new HashSet<>());
 
-//		Executor executor = Executors.newFixedThreadPool(10)
+		List<Runnable> tasks = new ArrayList<>();
 
 		for (int i = 0; i < numberOfThreads; ++i) {
 			final double threadLeft = left + i * slice;
@@ -63,10 +62,13 @@ public enum Integrator {
 
 			tasks.add(() -> {
 				try {
-					logger.log(Level.INFO, "Starting thread from " + threadLeft + " to " + threadRight + ", points " + threadPoints);
-					IntegrationResult ir = integrateSingle(threadLeft, threadRight, threadPoints, functionString);
-					logger.log(Level.INFO, "Finishes thread from " + threadLeft + " to " + threadRight + ", points " + threadPoints);
-					resultSet.add(ir);
+					String threadInfo = "thread from " + threadLeft + " to " + threadRight + ", points " + numberOfPointsForThread;
+					logger.log(Level.INFO, "Starting " + threadInfo);
+
+					IntegrationResult result = integrateSingle(threadLeft, threadRight, numberOfPointsForThread, functionString);
+
+					logger.log(Level.INFO, "Finishes " + threadInfo);
+					resultSet.add(result);
 				} catch (Exception e) {
 					logger.log(Level.WARNING, "An exception happened inside some thread: " + e);
 					exceptions.add(e);
