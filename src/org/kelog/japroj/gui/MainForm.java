@@ -131,16 +131,16 @@ public class MainForm extends JFrame {
 	private void createUI() {
 
 		// from google 'nimbus look and feel'
-		try {
-			for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-				if ("Nimbus".equals(info.getName())) {
+		for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+			if ("Nimbus".equals(info.getName())) {
+				try {
 					UIManager.setLookAndFeel(info.getClassName());
-					break;
+				} catch (Exception shouldNotHappen) {
 				}
+				break;
 			}
-		} catch (Exception ignored) {
-			// metal is default
 		}
+
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		rootPanel = new JPanel();
