@@ -50,7 +50,7 @@ public class IntegratorTest {
 
 		for (Integrator implem : Integrator.values()) {
 			for (int numberOfThreads : threadCombinations) {
-				System.out.println("Starting test routine for " + implem.getClass() + " (threads: " + numberOfThreads + ")");
+				System.out.println("Starting test routine for " + implem + " (threads: " + numberOfThreads + ")");
 
 				for (TestCase testCase : TestCase.values()) {
 					double actualResult = implem.integrate(testCase.left, testCase.right,

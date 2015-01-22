@@ -20,7 +20,7 @@ public class Benchmark {
 
 		for (Integrator instance : Integrator.values()) {
 
-			System.out.print("*** Benchmark for " + instance.getClass() + " -> ");
+			System.out.print("*** Benchmark for " + instance + " -> ");
 
 			long sumOfTimes = 0;
 			for (int i = 0; i < iters; ++i) {
