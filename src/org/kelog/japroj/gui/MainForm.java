@@ -76,7 +76,7 @@ public class MainForm extends JFrame {
 
 				timeLabel.setText("" + result.timeNS / 1_000_000.0 + " ms");
 				resultLabel.setText("S = " + result.result);
-				graphLabel.setIcon(new ImageIcon(new Plotter(PLOT_WIDTH, PLOT_HEIGHT).plot(left, right, functionString)));
+				graphLabel.setIcon(new ImageIcon(Plotter.plot(PLOT_WIDTH, PLOT_HEIGHT, left, right, functionString)));
 
 				logger.log(Level.INFO, "Result = " + result.result);
 				pack(); // ??
