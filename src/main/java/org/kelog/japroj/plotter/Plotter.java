@@ -51,7 +51,6 @@ public class Plotter {
 			points[i] += height / 2; // center the points relative to x axis
 		}
 
-
 		// draw function
 		// we need drawLine even for pixels because otherwise we run
 		// into issues with broken lines

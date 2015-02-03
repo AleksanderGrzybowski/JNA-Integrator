@@ -19,7 +19,6 @@ public class Benchmark {
 		l0.removeHandler(l0.getHandlers()[0]);
 
 		for (Integrator instance : Integrator.values()) {
-
 			System.out.print("*** Benchmark for " + instance + " -> ");
 
 			long sumOfTimes = 0;
@@ -27,8 +26,8 @@ public class Benchmark {
 				sumOfTimes += instance.integrate(left, right, points, functionString, threads).timeNS;
 			}
 
-			System.out.println("" + ((double) (sumOfTimes / iters)) / (1_000_000.0) + " ms\n");
+			double result = ((double) (sumOfTimes / iters)) / (1_000_000.0);
+			System.out.println("" + result + " ms\n");
 		}
 	}
-
 }

@@ -129,7 +129,6 @@ public class MainForm extends JFrame {
 	}
 
 	private void createUI() {
-
 		// from google 'nimbus look and feel'
 		for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 			if ("Nimbus".equals(info.getName())) {
@@ -140,7 +139,6 @@ public class MainForm extends JFrame {
 				break;
 			}
 		}
-
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		rootPanel = new JPanel();
@@ -314,7 +312,6 @@ public class MainForm extends JFrame {
 
 		useCradioButton.setSelected(true);
 
-		///
 		setVisible(true);
 		pack();
 	}

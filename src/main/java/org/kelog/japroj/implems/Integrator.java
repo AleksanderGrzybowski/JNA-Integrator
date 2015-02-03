@@ -41,14 +41,13 @@ public enum Integrator {
 	protected NativeInterface library = LibraryWrapper.getLibrary();
 	private Logger logger = Logger.getLogger(Integrator.class.getName());
 
-
-	public IntegrationResult integrate(double left, double right,
-	                                   int numberOfPoints, final String functionString, int numberOfThreads) throws
+	public IntegrationResult integrate(double left, double right, int numberOfPoints,
+	                                   final String functionString, int numberOfThreads) throws
 			IntegrationNumericError, InvalidInputFunctionError {
 
 
 		double slice = (right - left) / (double) numberOfThreads;
-		final int numberOfPointsForThread = numberOfPoints / numberOfThreads;
+		final int numberOfPointsPerThread = numberOfPoints / numberOfThreads;
 		final CountDownLatch latch = new CountDownLatch(numberOfThreads);
 
 		final Set<IntegrationResult> resultSet = Collections.synchronizedSet(new HashSet<>());
@@ -62,10 +61,10 @@ public enum Integrator {
 
 			tasks.add(() -> {
 				try {
-					String threadInfo = "thread from " + threadLeft + " to " + threadRight + ", points " + numberOfPointsForThread;
+					String threadInfo = "thread from " + threadLeft + " to " + threadRight + ", points " + numberOfPointsPerThread;
 					logger.log(Level.INFO, "Starting " + threadInfo);
 
-					IntegrationResult result = integrateSingle(threadLeft, threadRight, numberOfPointsForThread, functionString);
+					IntegrationResult result = integrateSingle(threadLeft, threadRight, numberOfPointsPerThread, functionString);
 
 					logger.log(Level.INFO, "Finishes " + threadInfo);
 					resultSet.add(result);
@@ -88,9 +87,9 @@ public enum Integrator {
 		}
 
 		if (!exceptions.isEmpty()) {
-			logger.log(Level.WARNING, "There were " + exceptions.size() + " EXCEPTIONS in threads");
+			logger.log(Level.WARNING, "There were " + exceptions.size() + " exceptions in threads");
 
-			// we care only the first one
+			// we care only about the first one
 			Exception e = exceptions.iterator().next();
 			if (e instanceof IntegrationNumericError) {
 				throw new IntegrationNumericError();
@@ -142,13 +141,8 @@ public enum Integrator {
 		}
 
 		long time = System.nanoTime();
-		///////////////////////////
 		double result = callAlgorithm(left, right, numberOfPoints, memory);
-		///////////////////////////
 		time = System.nanoTime() - time;
-
-		memory = null; // force GC?
-		System.gc();
 
 		return new IntegrationResult(result, time);
 	}
