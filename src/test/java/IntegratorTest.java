@@ -40,7 +40,7 @@ public class IntegratorTest {
 	}
 
 	@SuppressWarnings("FieldCanBeLocal")
-	private boolean LOGGING_ENABLED = false;
+	private boolean LOGGING_ENABLED = true;
 
 	@Test
 	public void test_all() throws Exception {

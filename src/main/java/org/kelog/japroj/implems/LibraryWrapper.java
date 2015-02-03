@@ -31,7 +31,9 @@ public class LibraryWrapper {
 			// this multiple-dir search is included so when tests are begin run
 			// they can find the library
 			// when running from jar, it's simpler - library is in the same folder as jar
-			String newJNApath = currentDir + ":" + (currentDir + File.separator + NATIVE_LIBRARY_DIRECTORY_WHEN_TESTING);
+			String newJNApath = currentDir + ":" + (currentDir + File.separator + NATIVE_LIBRARY_DIRECTORY_WHEN_TESTING)
+					+ ":" + currentDir + "/../../" + (NATIVE_LIBRARY_DIRECTORY_WHEN_TESTING)
+					+ ":" + "/home/kelog/Kodzenie/JNA-Integrator/build/classes/../../native";
 			logger.log(Level.INFO, " * Setting up JNA: jna.library.path is now -> " + newJNApath);
 			System.setProperty("jna.library.path", newJNApath);
 
