@@ -50,7 +50,7 @@ public enum Integrator {
 		final int numberOfPointsPerThread = numberOfPoints / numberOfThreads;
 		final CountDownLatch latch = new CountDownLatch(numberOfThreads);
 
-		final Set<IntegrationResult> resultSet = Collections.synchronizedSet(new HashSet<>());
+		final Set<IntegrationResult> results = Collections.synchronizedSet(new HashSet<>());
 		final Set<Exception> exceptions = Collections.synchronizedSet(new HashSet<>());
 
 		List<Runnable> tasks = new ArrayList<>();
@@ -67,7 +67,7 @@ public enum Integrator {
 					IntegrationResult result = integrateSingle(threadLeft, threadRight, numberOfPointsPerThread, functionString);
 
 					logger.log(Level.INFO, "Finishes " + threadInfo);
-					resultSet.add(result);
+					results.add(result);
 				} catch (Exception e) {
 					logger.log(Level.WARNING, "An exception happened inside some thread: " + e);
 					exceptions.add(e);
@@ -92,15 +92,15 @@ public enum Integrator {
 			// we care only about the first one
 			Exception e = exceptions.iterator().next();
 			if (e instanceof IntegrationNumericError) {
-				throw new IntegrationNumericError();
+				throw (IntegrationNumericError) e;
 			} else if (e instanceof InvalidInputFunctionError) {
-				throw new InvalidInputFunctionError();
+				throw (InvalidInputFunctionError) e;
 			} else {
 				logger.log(Level.WARNING, "There was an unknown exception in some thread: " + e);
 			}
 		}
 
-		return IntegrationResult.sumOf(resultSet);
+		return IntegrationResult.sumOf(results);
 	}
 
 
