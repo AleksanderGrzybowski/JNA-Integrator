@@ -1,7 +1,6 @@
-package org.kelog.japroj.tests;
+package org.kelog.japroj.implems;
 
 import org.junit.Test;
-import org.kelog.japroj.implems.Integrator;
 
 import java.util.Arrays;
 import java.util.List;
