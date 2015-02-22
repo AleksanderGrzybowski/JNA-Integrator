@@ -296,11 +296,17 @@ public class MainForm extends JFrame {
 		gbc.anchor = GridBagConstraints.WEST;
 		rootPanel.add(useJAVAradioButton, gbc);
 
+		// BUTTON GROUPS
+
 		useGroup = new ButtonGroup();
 		useGroup.add(useCradioButton);
 		useGroup.add(useASM_FPUradioButton);
 		useGroup.add(useASM_SSEradioButton);
 		useGroup.add(useJAVAradioButton);
+
+		useCradioButton.setSelected(true);
+
+		// GRAPH
 
 		graphLabel = new JLabel();
 		gbc.gridx = 0;
@@ -310,7 +316,7 @@ public class MainForm extends JFrame {
 		gbc.anchor = GridBagConstraints.CENTER;
 		rootPanel.add(graphLabel, gbc);
 
-		useCradioButton.setSelected(true);
+		// FINISH
 
 		setVisible(true);
 		pack();
