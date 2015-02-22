@@ -1,8 +1,7 @@
 package org.kelog.japroj.benchmark;
 
 import org.kelog.japroj.implems.Integrator;
-
-import java.util.logging.Logger;
+import org.kelog.japroj.misc.Utils;
 
 public class Benchmark {
 
@@ -14,9 +13,7 @@ public class Benchmark {
 	static int threads = 1;
 
 	public static void main(String[] args) throws Exception {
-		// turn off logging
-		Logger l0 = Logger.getLogger("");
-		l0.removeHandler(l0.getHandlers()[0]);
+		Utils.disableLogging();
 
 		for (Integrator instance : Integrator.values()) {
 			System.out.print("*** Benchmark for " + instance + " -> ");

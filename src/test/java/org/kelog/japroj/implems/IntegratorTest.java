@@ -1,10 +1,10 @@
 package org.kelog.japroj.implems;
 
 import org.junit.Test;
+import org.kelog.japroj.misc.Utils;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
 
@@ -44,7 +44,7 @@ public class IntegratorTest {
 	@Test
 	public void test_all() throws Exception {
 		if (!LOGGING_ENABLED) {
-			disableLogging();
+			Utils.disableLogging();
 		}
 
 		for (Integrator implem : Integrator.values()) {
@@ -59,11 +59,5 @@ public class IntegratorTest {
 				}
 			}
 		}
-	}
-
-	// from SO
-	private void disableLogging() {
-		Logger l0 = Logger.getLogger("");
-		l0.removeHandler(l0.getHandlers()[0]);
 	}
 }
