@@ -12,13 +12,13 @@ public class IntegrationResult {
 	}
 
 	public static IntegrationResult sumOf(Collection<IntegrationResult> results) {
-		double res = 0.0;
-		long tim = 0;
+		double result = 0.0;
+		long time = 0;
 
 		for (IntegrationResult ir : results) {
-			res += ir.result;
-			tim += ir.timeNS;
+			result += ir.result;
+			time += ir.timeNS;
 		}
-		return new IntegrationResult(res, tim);
+		return new IntegrationResult(result, time);
 	}
 }

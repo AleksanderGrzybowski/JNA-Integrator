@@ -5,6 +5,8 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * Hand-crafted shit, doesn't like much refactoring. Leaving for now.
@@ -68,12 +70,8 @@ public class Plotter {
 	}
 
 	private static double maxMagnitude(double[] arr) {
-		double currentMax = Math.abs(arr[0]);
-
-		for (double element : arr)
-			if (Math.abs(element) > currentMax)
-				currentMax = Math.abs(element);
-
-		return currentMax;
+		return Arrays.stream(arr).boxed()
+				.max(Comparator.comparing(Math::abs))
+				.get(); // will be always
 	}
 }
