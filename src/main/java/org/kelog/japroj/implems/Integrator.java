@@ -10,7 +10,7 @@ import org.kelog.japroj.exceptions.InvalidInputFunctionError;
 import org.kelog.japroj.misc.IntegrationResult;
 
 import java.util.*;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,61 +45,46 @@ public enum Integrator {
 	                                   final String functionString, int numberOfThreads) throws
 			IntegrationNumericError, InvalidInputFunctionError {
 
-
 		double slice = (right - left) / (double) numberOfThreads;
 		final int numberOfPointsPerThread = numberOfPoints / numberOfThreads;
-		final CountDownLatch latch = new CountDownLatch(numberOfThreads);
 
-		final Set<IntegrationResult> results = Collections.synchronizedSet(new HashSet<>());
-		final Set<Exception> exceptions = Collections.synchronizedSet(new HashSet<>());
+		Set<IntegrationResult> results = new HashSet<>();
 
-		List<Runnable> tasks = new ArrayList<>();
+		ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
+		CompletionService<IntegrationResult> service = new ExecutorCompletionService<>(executor);
 
 		for (int i = 0; i < numberOfThreads; ++i) {
 			final double threadLeft = left + i * slice;
 			final double threadRight = left + (i + 1) * slice;
 
-			tasks.add(() -> {
-				try {
-					String threadInfo = "thread from " + threadLeft + " to " + threadRight + ", points " + numberOfPointsPerThread;
-					logger.log(Level.INFO, "Starting " + threadInfo);
+			service.submit(() -> {
+                String threadInfo = "thread from " + threadLeft + " to " + threadRight + ", points " + numberOfPointsPerThread;
+                logger.log(Level.INFO, "Starting " + threadInfo);
 
-					IntegrationResult result = integrateSingle(threadLeft, threadRight, numberOfPointsPerThread, functionString);
+                IntegrationResult result = integrateSingle(threadLeft, threadRight, numberOfPointsPerThread, functionString);
 
-					logger.log(Level.INFO, "Finishes " + threadInfo);
-					results.add(result);
-				} catch (Exception e) {
-					logger.log(Level.WARNING, "An exception happened inside some thread: " + e);
-					exceptions.add(e);
-				}
-				latch.countDown();
+                logger.log(Level.INFO, "Finishes " + threadInfo);
+                return result;
 			});
 		}
 
-		for (Runnable r : tasks) {
-			new Thread(r).start();
-		}
-
-		try {
-			latch.await();
-		} catch (InterruptedException ignored) { // should never happen
-			ignored.printStackTrace();
-		}
-
-		if (!exceptions.isEmpty()) {
-			logger.log(Level.WARNING, "There were " + exceptions.size() + " exceptions in threads");
-
-			// we care only about the first one
-			Exception e = exceptions.iterator().next();
-			if (e instanceof IntegrationNumericError) {
-				throw (IntegrationNumericError) e;
-			} else if (e instanceof InvalidInputFunctionError) {
-				throw (InvalidInputFunctionError) e;
-			} else {
-				logger.log(Level.WARNING, "There was an unknown exception in some thread: " + e);
+		for (int i = 0; i < numberOfThreads; ++i) {
+			try {
+				results.add(service.take().get());
+			} catch (InterruptedException ignored) {
+			} catch (ExecutionException ee) {
+				Throwable e = ee.getCause();
+				if (e instanceof IntegrationNumericError) {
+					throw (IntegrationNumericError) e;
+				} else if (e instanceof InvalidInputFunctionError) {
+					throw (InvalidInputFunctionError) e;
+				} else {
+					logger.log(Level.WARNING, "There was an unknown exception in some thread: " + e);
+				}
 			}
 		}
 
+		executor.shutdown();
 		return IntegrationResult.sumOf(results);
 	}
 
@@ -140,11 +125,11 @@ public enum Integrator {
 			throw new IntegrationNumericError();
 		}
 
-		long time = System.nanoTime();
+		long before = System.nanoTime();
 		double result = callAlgorithm(left, right, numberOfPoints, memory);
-		time = System.nanoTime() - time;
+		long after = System.nanoTime();
 
-		return new IntegrationResult(result, time);
+		return new IntegrationResult(result, after - before);
 	}
 
 	abstract double callAlgorithm(double left, double right, int numberOfPoints, Pointer values);
