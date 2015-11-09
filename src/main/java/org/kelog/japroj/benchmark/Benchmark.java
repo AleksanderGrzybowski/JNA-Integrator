@@ -1,5 +1,6 @@
 package org.kelog.japroj.benchmark;
 
+import com.google.common.collect.Range;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import org.kelog.japroj.core.Integrator;
@@ -10,8 +11,7 @@ import org.kelog.japroj.impl.AllIntegrators;
 public class Benchmark {
 	
 	private String function = "sin(x)";
-	private double left = 0;
-	private double right = Math.PI * 2;
+	private Range<Double> range = Range.closed(0.0, Math.PI * 2);
 	private int points = 1_000_000;
 	private int iters = 10;
 	private int threads = 1;
@@ -29,7 +29,7 @@ public class Benchmark {
 
 			long sumOfTimes = 0;
 			for (int i = 0; i < iters; ++i) {
-				sumOfTimes += instance.integrate(left, right, points, function, threads).timeNS;
+				sumOfTimes += instance.integrate(range, points, function, threads).timeNS;
 			}
 
 			double result = ((double) (sumOfTimes / iters)) / (1_000_000.0);

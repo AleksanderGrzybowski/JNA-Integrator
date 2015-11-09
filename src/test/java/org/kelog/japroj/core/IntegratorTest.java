@@ -1,5 +1,6 @@
 package org.kelog.japroj.core;
 
+import com.google.common.collect.Range;
 import com.google.inject.Guice;
 import org.junit.Test;
 import org.kelog.japroj.di.MainModule;
@@ -20,22 +21,21 @@ public class IntegratorTest {
 
 	private enum TestCase {
 
-		T01("sin(x)", 0, Math.PI, 2),
-		T02("cos(x)", 0, 20 * Math.PI, 0),
-		T03("1", -10, 10, 20),
-		T04("x", 0, 1, 0.5),
-		T05("x^2 + 1", 0, 2, 14.0 / 3.0),
-		T06("2^x", 2, 4, 17.3123),
-		T07("x^2 + x^(-2)", 1, 2, 17.0 / 6.0);
+		T01("sin(x)", Range.closed(0.0, Math.PI), 2),
+		T02("cos(x)", Range.closed(0.0, 20 * Math.PI), 0),
+		T03("1", Range.closed(-10.0, 10.0), 20),
+		T04("x", Range.closed(0.0, 1.0), 0.5),
+		T05("x^2 + 1", Range.closed(0.0, 2.0), 14.0 / 3.0),
+		T06("2^x", Range.closed(2.0, 4.0), 17.3123),
+		T07("x^2 + x^(-2)", Range.closed(1.0, 2.0), 17.0 / 6.0);
 
-		TestCase(String function, double left, double right, double expected) {
-			this.left = left;
-			this.right = right;
+		TestCase(String function, Range<Double> range, double expected) {
+			this.range = range;
 			this.function = function;
 			this.expected = expected;
 		}
 
-		private double left, right;
+		private Range<Double> range;
 		private String function;
 		private double expected;
 	}
@@ -47,7 +47,7 @@ public class IntegratorTest {
 		for (Integrator implem : integrators) {
 			for (int numberOfThreads : threadCombinations) {
 				for (TestCase testCase : TestCase.values()) {
-					double actualResult = implem.integrate(testCase.left, testCase.right,
+					double actualResult = implem.integrate(testCase.range,
 							NUMBER_OF_POINTS, testCase.function, numberOfThreads).result;
 
 					assertEquals(testCase.expected, actualResult, COMPARISON_DELTA);

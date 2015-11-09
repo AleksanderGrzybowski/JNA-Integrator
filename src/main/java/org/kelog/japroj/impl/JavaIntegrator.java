@@ -1,10 +1,11 @@
 package org.kelog.japroj.impl;
 
+import com.google.common.collect.Range;
 import org.kelog.japroj.core.Integrator;
 
 public class JavaIntegrator extends Integrator {
 	
-	public double callAlgorithm(double left, double right, double[] array) {
+	public double callAlgorithm(Range<Double> range, double[] array) {
 		int numberOfPoints = array.length - 1;
 		
 		double result = array[0] + array[numberOfPoints];
@@ -12,7 +13,7 @@ public class JavaIntegrator extends Integrator {
 			result += 2 * array[i];
 		}
 
-		result *= ((right - left) / (2.0 * numberOfPoints));
+		result *= ((range.upperEndpoint() - range.lowerEndpoint()) / (2.0 * numberOfPoints));
 		return result;
 	}
 }
