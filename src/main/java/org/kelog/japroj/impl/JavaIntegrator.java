@@ -1,13 +1,10 @@
 package org.kelog.japroj.impl;
 
-import com.sun.jna.Pointer;
 import org.kelog.japroj.core.Integrator;
 
 public class JavaIntegrator extends Integrator {
 	
-	public double callAlgorithm(double left, double right, int numberOfPoints, Pointer values) {
-		double[] array = values.getDoubleArray(0, numberOfPoints + 1);
-
+	public double callAlgorithm(double left, double right, int numberOfPoints, double[] array) {
 		double result = array[0] + array[numberOfPoints];
 		for (int i = 1; i <= (numberOfPoints - 1); ++i)
 			result += 2 * array[i];

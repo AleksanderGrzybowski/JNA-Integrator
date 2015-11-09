@@ -1,15 +1,13 @@
 package org.kelog.japroj.core;
 
-import com.sun.jna.Memory;
-import com.sun.jna.Native;
-import com.sun.jna.Pointer;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import org.kelog.japroj.exceptions.IntegrationNumericError;
 import org.kelog.japroj.exceptions.InvalidInputFunctionError;
 import org.kelog.japroj.value.IntegrationResult;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -74,12 +72,8 @@ public abstract class Integrator {
 
 		// numberOfPoints must be even, so SSE can work (it can be fixed by checking that first, but yeah...)
 		if (numberOfPoints % 2 == 0) numberOfPoints++;
-
 		double width = (right - left) / ((double) numberOfPoints);
-
-		int sizeofDouble = Native.getNativeSize(Double.class);
-		Pointer memory = new Memory((numberOfPoints + 1) * sizeofDouble);
-
+		
 		Expression expression;
 		try {
 			expression = new ExpressionBuilder(functionString).variable("x").build();
@@ -88,6 +82,8 @@ public abstract class Integrator {
 			throw new InvalidInputFunctionError();
 		}
 
+		double[] points = new double[numberOfPoints+1];
+		
 		try {
 			// be careful, we use <= here, so one more iteration
 			for (int i = 0; i <= numberOfPoints; ++i) {
@@ -96,7 +92,7 @@ public abstract class Integrator {
 				if (y == Double.NaN || y == Double.NEGATIVE_INFINITY || y == Double.POSITIVE_INFINITY)
 					throw new IntegrationNumericError();
 
-				memory.setDouble(i * sizeofDouble, y);
+				points[i] = y;
 			}
 		} catch (ArithmeticException e) { // div by 0
 			logger.log(Level.SEVERE, "An exception happened while calculating function table values: " + e);
@@ -104,11 +100,11 @@ public abstract class Integrator {
 		}
 
 		long before = System.nanoTime();
-		double result = callAlgorithm(left, right, numberOfPoints, memory);
+		double result = callAlgorithm(left, right, numberOfPoints, points);
 		long after = System.nanoTime();
 
 		return new IntegrationResult(result, after - before);
 	}
 
-	public abstract double callAlgorithm(double left, double right, int numberOfPoints, Pointer values);
+	public abstract double callAlgorithm(double left, double right, int numberOfPoints, double[] values);
 }

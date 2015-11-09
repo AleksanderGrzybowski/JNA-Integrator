@@ -2,10 +2,9 @@ package org.kelog.japroj.impl;
 
 import com.google.inject.Inject;
 import com.sun.jna.Pointer;
-import org.kelog.japroj.core.Integrator;
 import org.kelog.japroj.core.NativeInterface;
 
-public class CIntegrator extends Integrator {
+public class CIntegrator extends NativeAlgorithmProxy {
 	
 	private final NativeInterface library;
 
