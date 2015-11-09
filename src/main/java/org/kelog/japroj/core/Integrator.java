@@ -17,19 +17,21 @@ public abstract class Integrator {
 	
 	private Logger logger = Logger.getLogger(Integrator.class.getName());
 
+	public abstract double callAlgorithm(double left, double right, double[] values);
+	
 	public IntegrationResult integrate(double left, double right, int numberOfPoints,
-	                                   final String functionString, int numberOfThreads) throws
+	                                   final String function, int threadCount) throws
 			IntegrationNumericError, InvalidInputFunctionError {
 
-		double slice = (right - left) / (double) numberOfThreads;
-		final int numberOfPointsPerThread = numberOfPoints / numberOfThreads;
+		double slice = (right - left) / (double) threadCount;
+		final int numberOfPointsPerThread = numberOfPoints / threadCount;
 
 		Set<IntegrationResult> results = new HashSet<>();
 
-		ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
+		ExecutorService executor = Executors.newFixedThreadPool(threadCount);
 		CompletionService<IntegrationResult> service = new ExecutorCompletionService<>(executor);
 
-		for (int i = 0; i < numberOfThreads; ++i) {
+		for (int i = 0; i < threadCount; ++i) {
 			final double threadLeft = left + i * slice;
 			final double threadRight = left + (i + 1) * slice;
 
@@ -37,14 +39,14 @@ public abstract class Integrator {
                 String threadInfo = "thread from " + threadLeft + " to " + threadRight + ", points " + numberOfPointsPerThread;
                 logger.log(Level.INFO, "Starting " + threadInfo);
 
-                IntegrationResult result = integrateSingle(threadLeft, threadRight, numberOfPointsPerThread, functionString);
+                IntegrationResult result = integrateSingle(threadLeft, threadRight, numberOfPointsPerThread, function);
 
                 logger.log(Level.INFO, "Finishes " + threadInfo);
                 return result;
 			});
 		}
 
-		for (int i = 0; i < numberOfThreads; ++i) {
+		for (int i = 0; i < threadCount; ++i) {
 			try {
 				results.add(service.take().get());
 			} catch (InterruptedException ignored) {
@@ -65,9 +67,9 @@ public abstract class Integrator {
 	}
 
 
-	// We have points x0, x1, x2 ... x(n-1) xn, so in fact the number of points is numberOfPoints+1
+	// We have points x0, x1, x2 ... x(n-1), xn - so in fact the number of points is numberOfPoints+1
 	// it doesn't matter actually, when we have like a million points
-	public IntegrationResult integrateSingle(double left, double right, int numberOfPoints, String functionString) throws
+	private IntegrationResult integrateSingle(double left, double right, int numberOfPoints, String functionString) throws
 			IntegrationNumericError, InvalidInputFunctionError {
 
 		// numberOfPoints must be even, so SSE can work (it can be fixed by checking that first, but yeah...)
@@ -89,8 +91,9 @@ public abstract class Integrator {
 			for (int i = 0; i <= numberOfPoints; ++i) {
 				double y = expression.setVariable("x", left + width * i).evaluate();
 
-				if (y == Double.NaN || y == Double.NEGATIVE_INFINITY || y == Double.POSITIVE_INFINITY)
+				if (y == Double.NaN || y == Double.NEGATIVE_INFINITY || y == Double.POSITIVE_INFINITY) {
 					throw new IntegrationNumericError();
+				}
 
 				points[i] = y;
 			}
@@ -105,6 +108,4 @@ public abstract class Integrator {
 
 		return new IntegrationResult(result, after - before);
 	}
-
-	public abstract double callAlgorithm(double left, double right, double[] values);
 }

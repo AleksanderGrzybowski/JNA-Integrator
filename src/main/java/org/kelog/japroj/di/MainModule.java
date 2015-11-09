@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MainModule extends AbstractModule {
+	
 	@Override
 	protected void configure() {
 		// Every type is concrete, so no specific config
@@ -38,8 +39,6 @@ public class MainModule extends AbstractModule {
 		String currentDir = getCurrentDir();
 		logger.log(Level.INFO, " * current directory -> " + currentDir);
 
-		NativeInterface library;
-
 		// There are lots of problems when dealing with paths to JNA libraries.
 		// This should do the trick.
 		String pathWhenRunningFromGradle = currentDir + "/" + LIBRARY_DIRECTORY;
@@ -55,6 +54,8 @@ public class MainModule extends AbstractModule {
 		System.setProperty("jna.library.path", newJNApath);
 
 		logger.log(Level.INFO, " * Trying to load platform dependent library...");
+
+		NativeInterface library;
 		try {
 			library = (NativeInterface) Native.loadLibrary(LIBRARY_NAME, NativeInterface.class);
 		} catch (LinkageError e) {
