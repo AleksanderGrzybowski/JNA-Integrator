@@ -1,4 +1,4 @@
-package org.kelog.japroj.implems;
+package org.kelog.japroj.core;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
@@ -7,7 +7,7 @@ import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import org.kelog.japroj.exceptions.IntegrationNumericError;
 import org.kelog.japroj.exceptions.InvalidInputFunctionError;
-import org.kelog.japroj.misc.IntegrationResult;
+import org.kelog.japroj.value.IntegrationResult;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -15,30 +15,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-public enum Integrator {
-	C_INTEGRATOR {
-		@Override
-		double callAlgorithm(double left, double right, int numberOfPoints, Pointer values) {
-			return library.integrateC(left, right, numberOfPoints, values);
-		}
-	}, SSE_INTEGRATOR {
-		@Override
-		double callAlgorithm(double left, double right, int numberOfPoints, Pointer values) {
-			return library.integrateASM_SSE(left, right, numberOfPoints, values);
-		}
-	}, FPU_INTEGRATOR {
-		@Override
-		double callAlgorithm(double left, double right, int numberOfPoints, Pointer values) {
-			return library.integrateASM_FPU(left, right, numberOfPoints, values);
-		}
-	}, JAVA_INTEGRATOR {
-		@Override
-		double callAlgorithm(double left, double right, int numberOfPoints, Pointer values) {
-			return JavaIntegrator.callAlgorithm(left, right, numberOfPoints, values);
-		}
-	};
-
-	protected NativeInterface library = LibraryWrapper.getLibrary();
+public abstract class Integrator {
+	
 	private Logger logger = Logger.getLogger(Integrator.class.getName());
 
 	public IntegrationResult integrate(double left, double right, int numberOfPoints,
@@ -132,5 +110,5 @@ public enum Integrator {
 		return new IntegrationResult(result, after - before);
 	}
 
-	abstract double callAlgorithm(double left, double right, int numberOfPoints, Pointer values);
+	public abstract double callAlgorithm(double left, double right, int numberOfPoints, Pointer values);
 }

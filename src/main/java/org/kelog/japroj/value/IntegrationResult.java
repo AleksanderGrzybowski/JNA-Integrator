@@ -1,4 +1,4 @@
-package org.kelog.japroj.misc;
+package org.kelog.japroj.value;
 
 import java.util.Collection;
 

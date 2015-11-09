@@ -1,4 +1,4 @@
-package org.kelog.japroj.implems;
+package org.kelog.japroj.core;
 
 import com.sun.jna.Library;
 import com.sun.jna.Pointer;

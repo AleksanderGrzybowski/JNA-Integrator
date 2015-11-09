@@ -1,7 +1,12 @@
-package org.kelog.japroj.implems;
+package org.kelog.japroj.di;
 
+import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
 import com.sun.jna.Native;
 import org.kelog.japroj.exceptions.PlatformLibraryNotFoundException;
+import org.kelog.japroj.core.Integrator;
+import org.kelog.japroj.core.NativeInterface;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -10,28 +15,30 @@ import java.util.StringJoiner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class LibraryWrapper {
+public class MainModule extends AbstractModule {
+	@Override
+	protected void configure() {
+		// Every type is concrete, so no specific config
+	}
+	
+	////////////////////////////////////////////////////////////////////////////////////////
 
 	public static final int ASM_TEST_MAGIC_NUMBER = 1337;
 	public static final String LIBRARY_DIRECTORY = "native";
 	public static final String LIBRARY_NAME = "native";
-	private static NativeInterface library;
 
-	private static Logger logger = Logger.getLogger(LibraryWrapper.class.getName());
-
-	public static NativeInterface getLibrary() throws PlatformLibraryNotFoundException {
-		if (library == null)
-			initLibrary();
-		return library;
-	}
-
-	private static void initLibrary() throws PlatformLibraryNotFoundException {
-		logger.log(Level.INFO, "org.kelog.japroj.implems.LibraryWrapper.getInstance() trying to load");
+	private static Logger logger = Logger.getLogger(MainModule.class.getName());
+	
+	@Provides
+	@Singleton
+	private NativeInterface loadNativeLibrary() {
+		logger.log(Level.INFO, "org.kelog.japroj.core.LibraryWrapper.getInstance() trying to load");
 		logger.log(Level.INFO, " * java.library.path -> " + System.getProperty("java.library.path"));
 
 		String currentDir = getCurrentDir();
 		logger.log(Level.INFO, " * current directory -> " + currentDir);
 
+		NativeInterface library;
 
 		// There are lots of problems when dealing with paths to JNA libraries.
 		// This should do the trick.
@@ -64,8 +71,10 @@ public class LibraryWrapper {
 		}
 
 		logger.log(Level.INFO, "****** Finished loading ******");
-	}
 
+		return library;
+	}
+	
 	// from stack, I don't really know if it works, but doesn't break anything
 	private static String getCurrentDir() {
 		String path = Integrator.class.getProtectionDomain().getCodeSource().getLocation().getPath();
@@ -75,15 +84,5 @@ public class LibraryWrapper {
 		} catch (UnsupportedEncodingException e) {
 		}
 		throw new RuntimeException(); // should never happen
-	}
-
-	public static boolean isPlatformLibraryPresent() {
-		// may change, however, if there fails it will fail everywhere else
-		try {
-			LibraryWrapper.getLibrary();
-			return true;
-		} catch (PlatformLibraryNotFoundException e) {
-			return false;
-		}
 	}
 }

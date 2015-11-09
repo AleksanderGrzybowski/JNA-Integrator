@@ -1,8 +1,12 @@
-package org.kelog.japroj.implems;
+package org.kelog.japroj.core;
 
+import com.google.inject.Guice;
 import org.junit.Test;
+import org.kelog.japroj.di.MainModule;
+import org.kelog.japroj.impl.AllIntegrators;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -38,7 +42,9 @@ public class IntegratorTest {
 
 	@Test
 	public void test_all() throws Exception {
-		for (Integrator implem : Integrator.values()) {
+		Collection<Integrator> integrators = Guice.createInjector(new MainModule()).getInstance(AllIntegrators.class).integrators;
+		
+		for (Integrator implem : integrators) {
 			for (int numberOfThreads : threadCombinations) {
 				for (TestCase testCase : TestCase.values()) {
 					double actualResult = implem.integrate(testCase.left, testCase.right,
