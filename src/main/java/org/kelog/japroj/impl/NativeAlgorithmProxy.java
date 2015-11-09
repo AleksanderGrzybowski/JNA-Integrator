@@ -8,7 +8,8 @@ import org.kelog.japroj.core.Integrator;
 public abstract class NativeAlgorithmProxy extends Integrator {
 	
 	@Override
-	public double callAlgorithm(double left, double right, int numberOfPoints, double[] values) {
+	public double callAlgorithm(double left, double right, double[] values) {
+		int numberOfPoints = values.length - 1;
 		int sizeofDouble = Native.getNativeSize(Double.class);
 		Pointer memory = new Memory((numberOfPoints + 1) * sizeofDouble);
 

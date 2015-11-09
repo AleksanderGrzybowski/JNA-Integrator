@@ -100,11 +100,11 @@ public abstract class Integrator {
 		}
 
 		long before = System.nanoTime();
-		double result = callAlgorithm(left, right, numberOfPoints, points);
+		double result = callAlgorithm(left, right, points);
 		long after = System.nanoTime();
 
 		return new IntegrationResult(result, after - before);
 	}
 
-	public abstract double callAlgorithm(double left, double right, int numberOfPoints, double[] values);
+	public abstract double callAlgorithm(double left, double right, double[] values);
 }
