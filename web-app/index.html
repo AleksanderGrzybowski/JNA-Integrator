@@ -3,9 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <title>Integrator</title>
+
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.css">
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="app.js"></script>
 </head>
 <body>
 
+<div class="container-fluid">
+    <div class="col-md-4">
+        <h1 class="text-center">Fill in data</h1>
+
+        <form>
+            <div class="form-group">
+                <label for="function">Function</label>
+                <input type="text" class="form-control" id="function" placeholder=>
+            </div>
+            <div class="form-inline form-group">
+                <label>Range of integration</label><br>
+                <input type="text" size="2" class="form-control" id="left"/>
+                -
+                <input type="text" size="2" class="form-control" id="right"/>
+            </div>
+            <div class="form-group">
+                <label for="points">Number of ponts</label>
+                <input class="form-control" id="points">
+            </div>
+
+            <button class="btn btn-default btn-block" id="calculate">Submfit</button>
+        </form>
+
+    </div>
+
+    <div class="col-md-8">
+        pictures
+    </div>
+</div>
 
 </body>
 </html>
