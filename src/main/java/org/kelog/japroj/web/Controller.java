@@ -38,7 +38,7 @@ public class Controller {
 						Double.parseDouble(req.queryParams("left")),
 						Double.parseDouble(req.queryParams("right"))
 				);
-				function = req.queryParams("function");
+				function = req.queryParams("func");
 				numberOfPoints = Integer.parseInt(req.queryParams("numberOfPoints"));
 			} catch (NumberFormatException e) {
 				halt(400);

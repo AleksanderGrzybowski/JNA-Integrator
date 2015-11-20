@@ -1,59 +1,57 @@
+function getParams() {
+    return {
+        left: Number($('#left').val()),
+        right: Number($('#right').val()),
+        numberOfPoints: Number($('#points').val()),
+        func: $('#func').val()
+    }
+}
+
 $(function () {
-    
     var actionUrl = '/calculate';
-    
+
     $('#calculate').click(function (e) {
         e.preventDefault();
 
-        var left = Number($('#left').val());
-        var right = Number($('#right').val());
-        var numberOfPoints = Number($('#points').val());
-        var func = $('#function').val();
+        var params = getParams();
+        var span = params.right - params.left;
         
-        var span = right - left;
+        if (span < 0) {
+            alert('Invalid range');
+            return;
+        }
 
-        var $plot = $('#plot-target');
-        var plotWidth = $plot.width();
-        var plotHeight = $(window).height() / 2; // TODO better?
-        
         functionPlot({
-            width: plotWidth,
-            height: plotHeight,
+            width: $('#plot-container').width(),
+            height: $(window).height() / 2, // TODO better?
             target: '#plot',
-            xDomain: [left - 1, right + 1],
+            xDomain: [params.left - 1, params.right + 1],
             data: [
                 { // definite integral
-                    fn: func,
-                    range: [left, right],
+                    fn: params.func,
+                    range: [params.left, params.right],
                     closed: true,
                     yDomain: [-1, 1],
                     xDomain: [-10, 10]
                 },
-                {
-                    fn: func,
-                    range: [left - span, right + span],
+                { // outline
+                    fn: params.func,
+                    range: [params.left - span, params.right + span],
                     yDomain: [-1, 1],
                     xDomain: [-10, 10]
-                },
-
+                }
             ]
         });
 
         $.ajax({
             url: actionUrl,
             type: 'GET',
-            data: {
-                left: left,
-                right: right,
-                numberOfPoints: numberOfPoints,
-                'function': func
-            },
+            data: params,
             success: function (data) {
-                $('#result').text("$$ \\int_{" + left + "}^{" + right + "}" + func + " = " + data.result + " $$");
+                $('#result').text("$$ \\int_{" + params.left + "}^{" + params.right + "}" + params.func + " = " + data.result + " $$");
                 MathJax.Hub.Typeset();
             },
             error: function () {
-                console.log('error here');
                 $('#result').text('Cannot perform calculation.');
             }
         })
