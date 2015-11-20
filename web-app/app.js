@@ -4,15 +4,43 @@ $(function () {
     
     $('#calculate').click(function (e) {
         e.preventDefault();
+
+        var left = Number($('#left').val());
+        var right = Number($('#right').val());
+        var numberOfPoints = Number($('#points').val());
+        var func = $('#function').val();
         
+        var span = right - left;
+        
+        functionPlot({
+            target: '#plot',
+            xDomain: [left - 1, right + 1],
+            data: [
+                { // definite integral
+                    fn: func,
+                    range: [left, right],
+                    closed: true,
+                    yDomain: [-1, 1],
+                    xDomain: [-10, 10]
+                },
+                {
+                    fn: func,
+                    range: [left - span, right + span],
+                    yDomain: [-1, 1],
+                    xDomain: [-10, 10]
+                },
+
+            ]
+        });
+
         $.ajax({
             url: actionUrl,
             type: 'GET',
             data: {
-                left: $('#left').val(),
-                right: $('#right').val(),
-                numberOfPoints: $('#points').val(),
-                'function': $('#function').val()
+                left: left,
+                right: right,
+                numberOfPoints: numberOfPoints,
+                'function': func
             },
             success: function (data) {
                 alert(data)
