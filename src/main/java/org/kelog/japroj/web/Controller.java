@@ -27,7 +27,8 @@ public class Controller {
 		Spark.externalStaticFileLocation(System.getProperty("user.dir") + File.separator + "web-app");
 
 		get("/calculate", (req, res) -> {
-
+			res.type("application/json"); // needed, otherwise string is returned as body
+			
 			Range<Double> range;
 			String function;
 			int numberOfPoints;
