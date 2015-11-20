@@ -11,11 +11,18 @@
     <script src="bower_components/d3/d3.js"></script>
     <script src="vendor/function-plot.js"></script>
     <script src="app.js"></script>
+
+    <style>
+        text.top-right-legend {
+            display: none;
+        }
+    </style>
 </head>
+
 <body>
 
 <div class="container-fluid">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <h1 class="text-center">Fill in data</h1>
 
         <form>
@@ -39,7 +46,7 @@
 
     </div>
 
-    <div class="col-md-8">
+    <div class="col-md-9" id="plot-target">
         <span id="plot"></span>
     </div>
 </div>

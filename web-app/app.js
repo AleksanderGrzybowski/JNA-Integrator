@@ -11,8 +11,14 @@ $(function () {
         var func = $('#function').val();
         
         var span = right - left;
+
+        var $plot = $('#plot-target');
+        var plotWidth = $plot.width();
+        var plotHeight = $('body').height(); // TODO better?
         
         functionPlot({
+            width: plotWidth,
+            height: plotHeight,
             target: '#plot',
             xDomain: [left - 1, right + 1],
             data: [
