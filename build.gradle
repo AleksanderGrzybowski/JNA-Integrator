@@ -1,10 +1,7 @@
 apply plugin: 'java'
+apply plugin: 'com.moowork.node'
 
 version = '1.0'
-
-def MAKE = "/usr/bin/make"
-def CC = "/usr/bin/gcc"
-def NASM = "/usr/bin/nasm"
 
 repositories {
 	mavenCentral()
@@ -13,6 +10,12 @@ repositories {
 task wrapper(type: Wrapper) {
     gradleVersion = '2.2.1'
 }
+
+// natives
+
+def MAKE = "/usr/bin/make"
+def CC = "/usr/bin/gcc"
+def NASM = "/usr/bin/nasm"
 
 task compileNatives(type: Exec) {
 	workingDir './native'
@@ -27,6 +30,36 @@ task cleanNatives(type: Exec) {
 tasks.compileJava.dependsOn(compileNatives)
 tasks.clean.dependsOn(cleanNatives)
 
+// frontend stuff 
+
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+
+    dependencies {
+        classpath "com.moowork.gradle:gradle-node-plugin:0.11"
+    }
+}
+
+node {
+    version = '0.12.0'
+    npmVersion = '2.5.1'
+    distBaseUrl = 'https://nodejs.org/dist'
+    download = true
+    workDir = file("${project.buildDir}/nodejs")
+    //  nodeModulesDir = file("${project.projectDir}") // not needed now
+}
+
+task bowerInstall(dependsOn: 'npm_install', type: Exec) {
+    workingDir './web-app'
+    commandLine '../node_modules/.bin/bower', 'install'
+}
+
+tasks.bowerInstall.dependsOn(npm_install)
+tasks.compileJava.dependsOn(bowerInstall) // TODO maybe somewhere else?
 
 dependencies {
 	testCompile 'junit:junit:4.11'
@@ -39,14 +72,11 @@ dependencies {
 
     compile group: 'com.sparkjava', name: 'spark-core', version: '2.2'
     compile group: 'com.google.code.gson', name: 'gson', version: '2.2.4'
-
-
-
 }
 
 task run(type: JavaExec) {
 	classpath = sourceSets.main.runtimeClasspath
-	main = "org.kelog.japroj.benchmark.Benchmark"
+	main = 'org.kelog.japroj.web.Controller'
 }
 
 jar {

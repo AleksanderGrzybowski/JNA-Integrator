@@ -20,3 +20,4 @@ raport/
 !gradle-wrapper.jar
 
 web-app/bower_components
+node_modules
