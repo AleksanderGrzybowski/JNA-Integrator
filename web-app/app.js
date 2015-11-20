@@ -51,6 +51,10 @@ $(function () {
             success: function (data) {
                 $('#result').text("$$ \\int_{" + left + "}^{" + right + "}" + func + " = " + data.result + " $$");
                 MathJax.Hub.Typeset();
+            },
+            error: function () {
+                console.log('error here');
+                $('#result').text('Cannot perform calculation.');
             }
         })
     });
