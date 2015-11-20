@@ -9,6 +9,7 @@
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <script src="bower_components/d3/d3.js"></script>
+    <script src="bower_components/MathJax/MathJax.js?config=TeX-AMS_HTML-full"></script>
     <script src="vendor/function-plot.js"></script>
     <script src="app.js"></script>
 
@@ -22,32 +23,41 @@
 <body>
 
 <div class="container-fluid">
-    <div class="col-md-3">
-        <h1 class="text-center">Fill in data</h1>
 
-        <form>
-            <div class="form-group">
-                <label for="function">Function</label>
-                <input type="text" class="form-control" id="function" placeholder=>
-            </div>
-            <div class="form-inline form-group">
-                <label>Range of integration</label><br>
-                <input type="text" size="2" class="form-control" id="left"/>
-                -
-                <input type="text" size="2" class="form-control" id="right"/>
-            </div>
-            <div class="form-group">
-                <label for="points">Number of ponts</label>
-                <input class="form-control" id="points">
-            </div>
+    <div class="row">
+        <div class="col-md-3">
+            <h1 class="text-center">Fill in data</h1>
 
-            <button class="btn btn-default btn-block" id="calculate">Submfit</button>
-        </form>
+            <form>
+                <div class="form-group">
+                    <label for="function">Function</label>
+                    <input type="text" class="form-control" id="function" placeholder=>
+                </div>
+                <div class="form-inline form-group">
+                    <label>Range of integration</label><br>
+                    <input type="text" size="2" class="form-control" id="left"/>
+                    -
+                    <input type="text" size="2" class="form-control" id="right"/>
+                </div>
+                <div class="form-group">
+                    <label for="points">Number of ponts</label>
+                    <input class="form-control" id="points">
+                </div>
 
+                <button class="btn btn-default btn-block" id="calculate">Submfit</button>
+            </form>
+
+        </div>
+
+        <div class="col-md-9" id="plot-target">
+            <span id="plot"></span>
+        </div>
     </div>
 
-    <div class="col-md-9" id="plot-target">
-        <span id="plot"></span>
+    <div class="row">
+        <div class="col-md-12">
+            <h1 id="result">$$ ... $$</h1>
+        </div>
     </div>
 </div>
 

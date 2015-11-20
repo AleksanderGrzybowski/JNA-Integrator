@@ -49,8 +49,10 @@ $(function () {
                 'function': func
             },
             success: function (data) {
-                alert(data)
+                $('#result').text("$$ \\int_{" + left + "}^{" + right + "}" + func + " = " + data.result + " $$");
+                MathJax.Hub.Typeset();
             }
         })
     });
 });
+
