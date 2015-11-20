@@ -14,7 +14,7 @@ $(function () {
 
         var $plot = $('#plot-target');
         var plotWidth = $plot.width();
-        var plotHeight = $('body').height(); // TODO better?
+        var plotHeight = $(window).height() / 2; // TODO better?
         
         functionPlot({
             width: plotWidth,
