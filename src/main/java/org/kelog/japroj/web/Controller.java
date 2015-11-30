@@ -15,6 +15,8 @@ import static spark.Spark.halt;
 
 public class Controller {
 
+	private static final int THREAD_COUNT = 3;
+	
 	private Integrator integrator;
 	
 	@Inject
@@ -23,7 +25,6 @@ public class Controller {
 	}
 	
 	public void init() {
-
 		Spark.externalStaticFileLocation(System.getProperty("user.dir") + File.separator + "web-app");
 
 		get("/calculate", (req, res) -> {
@@ -38,15 +39,16 @@ public class Controller {
 						Double.parseDouble(req.queryParams("left")),
 						Double.parseDouble(req.queryParams("right"))
 				);
-				function = req.queryParams("func");
 				numberOfPoints = Integer.parseInt(req.queryParams("numberOfPoints"));
 			} catch (NumberFormatException e) {
 				halt(400);
 				return "";
 			}
 			
+			function = req.queryParams("func");
+			
 			try {
-				return integrator.integrate(range, numberOfPoints, function, 3);
+				return integrator.integrate(range, numberOfPoints, function, THREAD_COUNT);
 			} catch (Exception e) {
 				halt(400);
 				return "";
