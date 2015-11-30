@@ -9,35 +9,35 @@ import org.kelog.japroj.impl.AllIntegrators;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class Benchmark {
-	
-	private String function = "sin(x)";
-	private Range<Double> range = Range.closed(0.0, Math.PI * 2);
-	private int points = 1_000_000;
-	private int iters = 10;
-	private int threads = 1;
 
-	private final AllIntegrators all;
+    private String function = "sin(x)";
+    private Range<Double> range = Range.closed(0.0, Math.PI * 2);
+    private int points = 1_000_000;
+    private int iters = 10;
+    private int threads = 1;
 
-	@Inject
-	public Benchmark(AllIntegrators all) {
-		this.all = all;
-	}
+    private final AllIntegrators all;
 
-	public void start() throws Exception {
-		for (Integrator instance : all.integrators) {
-			System.out.print("*** Benchmark for " + instance + " -> ");
+    @Inject
+    public Benchmark(AllIntegrators all) {
+        this.all = all;
+    }
 
-			long sumOfTimes = 0;
-			for (int i = 0; i < iters; ++i) {
-				sumOfTimes += instance.integrate(range, points, function, threads).timeNS;
-			}
+    public void start() throws Exception {
+        for (Integrator instance : all.integrators) {
+            System.out.print("*** Benchmark for " + instance + " -> ");
 
-			double result = ((double) (sumOfTimes / iters)) / (1_000_000.0);
-			System.out.println(result + " ms\n");
-		}
-	}
-	
-	public static void main(String[] args) throws Exception {
-		Guice.createInjector(new MainModule()).getInstance(Benchmark.class).start();
-	}
+            long sumOfTimes = 0;
+            for (int i = 0; i < iters; ++i) {
+                sumOfTimes += instance.integrate(range, points, function, threads).timeNS;
+            }
+
+            double result = ((double) (sumOfTimes / iters)) / (1_000_000.0);
+            System.out.println(result + " ms\n");
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        Guice.createInjector(new MainModule()).getInstance(Benchmark.class).start();
+    }
 }

@@ -9,10 +9,10 @@ import java.util.Collections;
 
 public class AllIntegrators {
 
-	public final Collection<Integrator> integrators;
-	
-	@Inject
-	public AllIntegrators(AsmFPUIntegrator fpu, AsmSSEIntegrator sse, CIntegrator c, JavaIntegrator java) {
-		integrators = Collections.unmodifiableList(Arrays.asList(fpu, sse, c, java));
-	}
+    public final Collection<Integrator> integrators;
+
+    @Inject
+    public AllIntegrators(AsmFPUIntegrator fpu, AsmSSEIntegrator sse, CIntegrator c, JavaIntegrator java) {
+        integrators = Collections.unmodifiableList(Arrays.asList(fpu, sse, c, java));
+    }
 }

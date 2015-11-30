@@ -1,39 +1,12 @@
 #include <stdio.h>
 
 double integrateC(double left, double right, int points, double* values) {
-	double result = values[0] + values[points];
+    double result = values[0] + values[points];
 
-	int i;
-	for (i = 1; i <= (points-1); ++i)
-		result += 2*values[i];
+    int i;
+    for (i = 1; i <= (points-1); ++i)
+        result += 2*values[i];
 
-	result *= ( ((double)(right-left))/(2.0*points));
-	return result;
-}
-
-double integrate_debug(double left, double right, int points, double* wartosci) {
-
-	printf("left=%f right=%f points=%d\n", left, right, points);
-
-	int x;
-	// for (x = 0; x <= points; ++x) {
-	// 	printf("Pod pozycją %d jest liczba %lf\n", x, wartosci[x]);
-	// }
-
-
-	double wynik = 0;
-
-	// wartości: <0..n>
-
-	wynik += wartosci[0] + wartosci[points];
-
-	int i;
-	for (i = 1; i <= (points-1); ++i)
-		wynik += 2*wartosci[i];
-
-	
-
-	wynik *= ( ((double)(right-left))/(2.0*points));
-	printf("%f\n", wynik);
-	return wynik;
+    result *= ( ((double)(right-left))/(2.0*points));
+    return result;
 }
