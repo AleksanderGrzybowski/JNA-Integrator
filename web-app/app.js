@@ -48,7 +48,10 @@ $(function () {
             type: 'GET',
             data: params,
             success: function (data) {
-                $('#result').text("$$ \\int_{" + params.left + "}^{" + params.right + "}" + params.func + " = " + data.result + " $$");
+                var $result = $('#result');
+                
+                $result.text("$$ \\int_{" + params.left + "}^{" + params.right + "}" + params.func + " = " + data.result + " $$");
+                $result.removeClass('animate-fadeInOut');
                 MathJax.Hub.Typeset();
             },
             error: function () {
