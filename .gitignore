@@ -21,3 +21,6 @@ raport/
 
 web-app/bower_components
 node_modules
+
+*.log
+.vagrant/
