@@ -1,8 +1,9 @@
 package org.kelog.japroj.impl;
 
 import com.google.common.collect.Range;
-import org.kelog.japroj.core.Integrator;
+import org.springframework.stereotype.Component;
 
+@Component
 public class JavaIntegrator extends Integrator {
 
     public double callAlgorithm(Range<Double> range, double[] array) {

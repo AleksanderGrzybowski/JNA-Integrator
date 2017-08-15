@@ -1,10 +1,10 @@
-package org.kelog.japroj.impl;
+package org.kelog.japroj.platform;
 
 import com.google.common.collect.Range;
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
-import org.kelog.japroj.core.Integrator;
+import org.kelog.japroj.impl.Integrator;
 
 public abstract class NativeAlgorithmProxy extends Integrator {
 

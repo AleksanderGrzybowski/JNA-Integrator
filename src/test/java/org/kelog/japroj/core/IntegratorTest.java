@@ -1,10 +1,8 @@
 package org.kelog.japroj.core;
 
 import com.google.common.collect.Range;
-import com.google.inject.Guice;
 import org.junit.Test;
-import org.kelog.japroj.di.MainModule;
-import org.kelog.japroj.impl.AllIntegrators;
+import org.kelog.japroj.impl.Integrator;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -42,7 +40,7 @@ public class IntegratorTest {
 
     @Test
     public void test_all() throws Exception {
-        Collection<Integrator> integrators = Guice.createInjector(new MainModule()).getInstance(AllIntegrators.class).integrators;
+        Collection<Integrator> integrators = null; // TODO redo testing
 
         for (Integrator implem : integrators) {
             for (int numberOfThreads : threadCombinations) {

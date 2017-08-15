@@ -1,4 +1,7 @@
 package org.kelog.japroj.exceptions;
 
-public class InvalidInputFunctionError extends Exception {
+public class InvalidInputFunctionError extends RuntimeException {
+    public InvalidInputFunctionError(Exception cause) {
+        super(cause);
+    }
 }
