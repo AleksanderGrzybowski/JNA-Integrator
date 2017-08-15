@@ -1,14 +1,23 @@
+buildscript {
+    ext {
+        springBootVersion = '1.5.6.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
 apply plugin: 'java'
-apply plugin: 'com.moowork.node'
+apply plugin: 'org.springframework.boot'
 
 version = '1.0'
+sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.2.1'
 }
 
 // natives
@@ -30,38 +39,11 @@ task cleanNatives(type: Exec) {
 tasks.compileJava.dependsOn(compileNatives)
 tasks.clean.dependsOn(cleanNatives)
 
-// frontend stuff 
-
-buildscript {
-    repositories {
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-
-    dependencies {
-        classpath "com.moowork.gradle:gradle-node-plugin:0.11"
-    }
-}
-
-node {
-    version = '0.12.0'
-    npmVersion = '2.5.1'
-    distBaseUrl = 'https://nodejs.org/dist'
-    download = true
-    workDir = file("${project.buildDir}/nodejs")
-    //  nodeModulesDir = file("${project.projectDir}") // not needed now
-}
-
-task bowerInstall(dependsOn: 'npm_install', type: Exec) {
-    workingDir './web-app'
-    commandLine '../node_modules/.bin/bower', 'install'
-}
-
-tasks.bowerInstall.dependsOn(npm_install)
-tasks.compileJava.dependsOn(bowerInstall) // TODO maybe somewhere else?
 
 dependencies {
+    compile('org.springframework.boot:spring-boot-starter-web')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+
     testCompile 'junit:junit:4.11'
     compile 'net.java.dev.jna:jna:4.1.0'
     compile 'net.java.dev.jna:jna-platform:4.0.0'
@@ -70,16 +52,5 @@ dependencies {
     compile 'com.google.inject:guice:3.0'
     compile 'com.google.guava:guava:18.0'
 
-    compile group: 'com.sparkjava', name: 'spark-core', version: '2.2'
-    compile group: 'com.google.code.gson', name: 'gson', version: '2.2.4'
+    compile group: 'org.projectlombok', name: 'lombok', version: '1.16.18'
 }
-
-task run(type: JavaExec) {
-    classpath = sourceSets.main.runtimeClasspath
-    main = 'org.kelog.japroj.web.Controller'
-}
-
-jar {
-    manifest { attributes 'Main-Class': 'org.kelog.japroj.gui.MainForm' }
-}
-
