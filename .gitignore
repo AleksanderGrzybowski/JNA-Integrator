@@ -24,3 +24,5 @@ node_modules
 
 *.log
 .vagrant/
+frontend/node_modules/
+frontend/dist/

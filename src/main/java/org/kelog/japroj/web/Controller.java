@@ -10,8 +10,7 @@ import spark.Spark;
 
 import java.io.File;
 
-import static spark.Spark.get;
-import static spark.Spark.halt;
+import static spark.Spark.*;
 
 public class Controller {
 
@@ -55,9 +54,38 @@ public class Controller {
             }
 
         }, new JsonTransformer());
+        
+        enableCORS();
     }
 
     public static void main(String[] args) {
         Guice.createInjector(new MainModule()).getInstance(Controller.class).init();
     }
+    
+    // https://sparktutorials.github.io/2016/05/01/cors.html
+    private static void enableCORS() {
+        options("/*", (request, response) -> {
+            
+            String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
+            if (accessControlRequestHeaders != null) {
+                response.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
+            }
+            
+            String accessControlRequestMethod = request.headers("Access-Control-Request-Method");
+            if (accessControlRequestMethod != null) {
+                response.header("Access-Control-Allow-Methods", accessControlRequestMethod);
+            }
+            
+            return "OK";
+        });
+        
+        before((request, response) -> {
+            response.header("Access-Control-Allow-Origin", "*");
+            response.header("Access-Control-Request-Method", "POST, GET, OPTIONS");
+            response.header("Access-Control-Allow-Headers", "*");
+            // Note: this may or may not be necessary in your particular application
+            response.type("application/json");
+        });
+    }
+    
 }
